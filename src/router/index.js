@@ -9,6 +9,16 @@ const routes = [
         path: '/login',
         name: 'login',
         component:() =>import('../components/LoginVue.vue')
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component:() =>import('../components/RegisterVue.vue')
+    },
+    {
+        path: '/retrieve',
+        name: 'retrieve',
+        component:() =>import('../components/RetrieveVue.vue')
     }
 ];
 

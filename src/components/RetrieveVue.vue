@@ -3,20 +3,23 @@
     <div class="panel">
       <div class="content">
         <div class="switch">
-          <h1 id="login">登录</h1>
+          <h1 id="signUp">忘记密码</h1>
         </div>
 
         <form action="">
 
-          <div id="userName" class="input" aria-placeholder="用户名"><input type="text"></div>
-          <div id="password" class="input" aria-placeholder="密码"><input type="password"></div>
+          <div id="email" class="input" aria-placeholder="邮箱"><input type="text"></div>
+          <p><button id="getEmailCode">点击获取验证码</button></p>
+          <div id="emailCode" class="input" aria-placeholder="邮箱验证码"><input type="text"></div>
+          <div id="password" class="input" aria-placeholder="新密码"><input type="password"></div>
+          <div id="repeat" class="input" aria-placeholder="确认密码"><input type="password"></div>
 
           <p>
-            <a id="signUp" href="register" class="input">跳转注册</a>
-            <span> | </span>
-            <a id="forget" href="retrieve" class="input">忘记密码？</a>
+            <a id="login" href="login" class="input">点击跳转登录</a>
           </p>
-          <button class="button">登录</button>
+
+          <button onclick="location.href='login'" id="reset" type="button">提交更改</button>
+
         </form>
       </div>
     </div>
@@ -25,7 +28,7 @@
 
 <script>
 export default {
-  name: "LoginVue",
+  name: "RetrieveVue"
 }
 </script>
 
@@ -45,7 +48,7 @@ export default {
 }
 
 .container {
-  position: fixed;
+  position: relative;
 }
 
 .panel {
@@ -106,13 +109,13 @@ export default {
   color: rgba(138, 143, 255, 0.4);
 }
 
-.input#signUp {
+.input#login {
   color: #7d74ff;
   font-size: 0.8rem;
   text-decoration: none;
 }
 
-.input#signUp:hover {
+.input#login:hover {
   color: rgba(138, 143, 255, 0.4);
 }
 
@@ -139,33 +142,29 @@ form .input {
   height: 42px;
 }
 
-form .input#userName {
+form .input#email {
   margin: 3rem 0 0;
 }
 
-form .input#password {
-  height: 1.6rem;
-}
-
-form button {
+form button#reset {
   display: block;
   border: none;
   outline: none;
-  margin: 2rem 61px 0;
-  width: 56px;
-  height: 56px;
+  margin: 2rem 56px 0;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   background: linear-gradient(90deg, #8a8fff, rgb(216, 174, 255));
   box-shadow: 0 0 8px #8a8fff;
   cursor: pointer;
 }
 
-form button:hover {
+form button#reset:hover {
   border: none;
   outline: none;
   margin: 2rem -7px 0;
   width: 100%;
-  height: 3.5rem;
+  height: 66px;
   border-radius: 3rem;
   background: linear-gradient(90deg, rgba(138, 143, 255, 0.75), rgba(216, 174, 255, 0.75));
   box-shadow: 0 0 8px #8a8fff;
@@ -173,4 +172,24 @@ form button:hover {
   color: rgba(0,0,0,0.6);
   transition: .4s;
 }
+
+form button#getEmailCode {
+  display: block;
+  border: none;
+  outline: none;
+  width: 7rem;
+  border-radius: 5%;
+  background: linear-gradient(90deg, rgba(138, 143, 255, 0.76), rgba(182, 130, 255, 0.76));
+  box-shadow: 0 0 8px #8a8fff;
+  cursor: pointer;
+  color: #d3c2ff;
+
+}
+
+form button#getEmailCode:hover {
+  background: linear-gradient(90deg, rgba(138, 143, 255, 0.5), rgba(182, 130, 255, 0.51));
+  color: rgba(211, 194, 255, 0.7);
+
+}
+
 </style>

@@ -3,20 +3,22 @@
     <div class="panel">
       <div class="content">
         <div class="switch">
-          <h1 id="login">登录</h1>
+          <h1 id="signUp">注册</h1>
         </div>
 
         <form action="">
 
           <div id="userName" class="input" aria-placeholder="用户名"><input type="text"></div>
+          <div id="email" class="input" aria-placeholder="邮箱"><input type="text"></div>
           <div id="password" class="input" aria-placeholder="密码"><input type="password"></div>
+          <div id="repeat" class="input" aria-placeholder="确认密码"><input type="password"></div>
 
           <p>
-            <a id="signUp" href="register" class="input">跳转注册</a>
-            <span> | </span>
-            <a id="forget" href="retrieve" class="input">忘记密码？</a>
+            <a id="login" href="login" class="input">已有账户？点击登录</a>
           </p>
-          <button class="button">登录</button>
+
+          <button onclick="location.href='UserLogin.html'" type="button">注册</button>
+
         </form>
       </div>
     </div>
@@ -25,7 +27,7 @@
 
 <script>
 export default {
-  name: "LoginVue",
+  name: "RegisterVue"
 }
 </script>
 
@@ -45,7 +47,7 @@ export default {
 }
 
 .container {
-  position: fixed;
+  position: relative;
 }
 
 .panel {
@@ -106,13 +108,13 @@ export default {
   color: rgba(138, 143, 255, 0.4);
 }
 
-.input#signUp {
+.input#login {
   color: #7d74ff;
   font-size: 0.8rem;
   text-decoration: none;
 }
 
-.input#signUp:hover {
+.input#login:hover {
   color: rgba(138, 143, 255, 0.4);
 }
 
