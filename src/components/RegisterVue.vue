@@ -10,14 +10,14 @@
 
           <div id="userName" class="input" aria-placeholder="用户名"><input type="text"></div>
           <div id="email" class="input" aria-placeholder="邮箱"><input type="text"></div>
+          <button id="getEmailCode">点击获取验证码</button>
+          <div id="code" class="input" aria-placeholder="邮箱验证码"><input type="text"></div>
           <div id="password" class="input" aria-placeholder="密码"><input type="password"></div>
           <div id="repeat" class="input" aria-placeholder="确认密码"><input type="password"></div>
-
           <p>
             <a id="login" href="login" class="input">已有账户？点击登录</a>
           </p>
-
-          <button onclick="location.href='UserLogin.html'" type="button">注册</button>
+          <button id="register" onclick="location.href='login'" type="button">注册</button>
 
         </form>
       </div>
@@ -149,7 +149,7 @@ form .input#password {
   height: 1.6rem;
 }
 
-form button {
+form button#register {
   display: block;
   border: none;
   outline: none;
@@ -162,7 +162,7 @@ form button {
   cursor: pointer;
 }
 
-form button:hover {
+form button#register:hover {
   border: none;
   outline: none;
   margin: 2rem -7px 0;
@@ -174,5 +174,21 @@ form button:hover {
   cursor: pointer;
   color: rgba(0,0,0,0.6);
   transition: .4s;
+}
+form button#getEmailCode {
+  display: block;
+  border: none;
+  outline: none;
+  width: 7rem;
+  border-radius: 5%;
+  background: linear-gradient(90deg, rgba(138, 143, 255, 0.76), rgba(182, 130, 255, 0.76));
+  box-shadow: 0 0 8px #8a8fff;
+  cursor: pointer;
+  color: #d3c2ff;
+}
+
+form button#getEmailCode:hover {
+  background: linear-gradient(90deg, rgba(138, 143, 255, 0.5), rgba(182, 130, 255, 0.51));
+  color: rgba(211, 194, 255, 0.7);
 }
 </style>
