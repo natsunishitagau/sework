@@ -8,16 +8,16 @@
 
         <form action="">
 
-          <div id="userName" class="input" aria-placeholder="用户名"><input type="text"></div>
-          <div id="email" class="input" aria-placeholder="邮箱"><input type="text"></div>
-          <button id="getEmailCode">点击获取验证码</button>
-          <div id="code" class="input" aria-placeholder="邮箱验证码"><input type="text"></div>
-          <div id="password" class="input" aria-placeholder="密码"><input type="password"></div>
-          <div id="repeat" class="input" aria-placeholder="确认密码"><input type="password"></div>
+          <div id="userName" class="input" ><input type="text" placeholder="用户名" v-model="nickname" @keyup="checkNickname(nickname)"><span v-show="nicknameWrong">用户名应为1-10位汉字、字母或数字</span></div>
+          <div id="email" class="input"><input type="text" placeholder="邮箱" v-model="email" @keyup="checkEmail(email)"><span v-show="emailWrong">邮箱格式错误</span></div>
+          <button id="getEmailCode" @click="sendEmail()" type="button">点击获取验证码</button>
+          <div id="code" class="input"><input type="text" placeholder="邮箱验证码" v-model="code"></div>
+          <div id="password" class="input"><input type="password" placeholder="密码" v-model="password1" @keyup="checkPassword1(password1)"><span v-show="passwordWrong">密码应为6~20位且包含字母与数字</span></div>
+          <div id="repeat" class="input"><input type="password" placeholder="确认密码" v-model="password2" @keyup="checkPassword2(password2)"><span v-show="twoPasswordWrong">两次密码不一致</span></div>
           <p>
             <a id="login" href="login" class="input">已有账户？点击登录</a>
           </p>
-          <button id="register" onclick="location.href='login'" type="button">注册</button>
+          <button id="register" onclick="location.href= nowHref" type="button" @click="registerIn()">注册</button>
 
         </form>
       </div>
@@ -27,7 +27,90 @@
 
 <script>
 export default {
-  name: "RegisterVue"
+  name: "RegisterVue",
+  data(){
+    return{
+      nowHref:'register',
+      nickname:'',
+      password1:'',
+      password2:'',
+      email:'',
+      code:'',
+      result:-1,
+      message:'',
+      nicknameWrong:false,
+      emailWrong:false,
+      passwordWrong:false,
+      twoPasswordWrong:false
+    }
+  },
+  methods:{
+    checkNickname(nicknameIn){
+      const that = this
+      const pattern = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]{1,10}$")
+      that.nicknameWrong = !(pattern.test(nicknameIn))
+    },
+    checkEmail(emailIn){
+      const that = this
+      const pattern = new RegExp("^[\\w-]+@[\\w-]+\\.(com|net|org|edu|mil|tv|biz|info)$")
+      that.emailWrong = !(pattern.test(emailIn))
+    },
+    checkPassword1(passwordIn){
+      const that = this
+      const pattern = new RegExp( /^(?=.*[a-zA-Z])(?=.*\d)[^]{6,20}$/)
+      that.passwordWrong = !(pattern.test(passwordIn))
+    },
+    checkPassword2(password2In){
+      const that = this
+      that.twoPasswordWrong = !(password2In === that.password1)
+    },
+    sendEmail(){
+      const that = this
+      this.$axios.post('/user/registerEmail/', this.$qs.stringify({
+        email: that.email
+      })).then(res =>{
+        console.log(res);
+        if(res.data.result === 0){
+          alert("发送成功！")
+        }
+        else if(res.data.result === 2){
+          alert("邮箱已被注册！")
+        }
+        else if(res.data.result === 3){
+          alert("发送失败，请检查邮箱是否正确！")
+        }
+      })
+    },
+    registerIn(){
+      const that = this
+      if(!that.nicknameWrong && !that.emailWrong && !that.passwordWrong && !that.twoPasswordWrong){
+        this.$axios.post('/user/register/', this.$qs.stringify({
+          nickname: that.nickname,
+          password: that.password1,
+          email: that.email,
+          code: that.code
+        })).then(res =>{
+          console.log(res);
+          if(res.data.result === 0){
+            alert("注册成功!")
+            that.nowHref = 'login'
+          }
+          else if(res.data.result === 2){
+            alert("邮箱已注册!")
+          }
+          else if(res.data.result === 3){
+            alert("邮箱验证码错误!")
+          }
+          else{
+            alert("请求方式错误！")
+          }
+        })
+      }
+      else{
+        alert("输入信息有误！")
+      }
+    }
+  }
 }
 </script>
 
@@ -37,6 +120,9 @@ export default {
   padding: 0;
 }
 
+input::-webkit-input-placeholder{
+  color:  rgba(125, 116, 255,.8);
+}
 .container {
   height: 100vh;
   width: 100vw;
@@ -123,7 +209,7 @@ form p {
 }
 
 form span {
-  color: #7d74ff;
+  color: red;
   font-size: 0.8rem;
   cursor: default;
 }

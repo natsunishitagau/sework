@@ -8,15 +8,15 @@
 
         <form action="">
 
-          <div id="userName" class="input" aria-placeholder="用户名"><input type="text"></div>
-          <div id="password" class="input" aria-placeholder="密码"><input type="password"></div>
+          <div id="userName" class="input" aria-placeholder="邮箱"><input type="text" v-model="email"></div>
+          <div id="password" class="input" aria-placeholder="密码"><input type="password" v-model="password"></div>
 
           <p>
             <a id="signUp" href="register" class="input">跳转注册</a>
             <span> | </span>
             <a id="forget" href="retrieve" class="input">忘记密码？</a>
           </p>
-          <button class="button">登录</button>
+          <button class="button" type="button" @click="login()">登录</button>
         </form>
       </div>
     </div>
@@ -26,6 +26,36 @@
 <script>
 export default {
   name: "LoginVue",
+  data(){
+    return{
+      nowHref:'',
+      email:'',
+      password:''
+    }
+  },
+  methods:{
+    login(){
+      const that = this
+      this.$axios.post('/user/login/',this.$qs.stringify({
+        email: that.email,
+        password: that.password
+      })).then(res =>{
+        console.log(res)
+        if(res.data.result === 0){
+          alert("登录成功!")
+        }
+        else if(res.data.result === 2){
+          alert("邮箱不存在！")
+        }
+        else if(res.data.result === 3){
+          alert("密码不正确！")
+        }
+        else{
+          alert("请求方式错误！")
+        }
+      })
+    }
+  }
 }
 </script>
 
