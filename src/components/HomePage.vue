@@ -1,6 +1,6 @@
 <template>
     <NaviBar></NaviBar>
-    <p>This is the Home Page</p>
+    <p>This is the Home Page a</p>
 </template>
 
 <script>
@@ -18,6 +18,9 @@ export default {
   },
   methods: {
     
+  },
+  created() {
+    
   }
 }
 </script>
@@ -25,7 +28,7 @@ export default {
 <style scoped>
   p
   {
-    padding-top: 70px;
+    padding-top: 80px;
     font-size: 50px;
   }
 </style>
