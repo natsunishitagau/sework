@@ -19,7 +19,7 @@
       </div>
       <div v-else>
         <div>未登录</div>
-        <div class="login"><a href="" target="_self">登录 / 注册</a></div>
+        <div class="login"><a href="login" target="_self">登录 / 注册</a></div>
       </div>
     </div>
     <ul>
