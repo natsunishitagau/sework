@@ -13,13 +13,13 @@
           <svg class="arow" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M340.864 149.312a30.592 30.592 0 0 0 0 42.752L652.736 512 340.864 831.872a30.592 30.592 0 0 0 0 42.752 29.12 29.12 0 0 0 41.728 0L714.24 534.336a32 32 0 0 0 0-44.672L382.592 149.376a29.12 29.12 0 0 0-41.728 0z"></path></svg>
         </div>
         <hr/>
-        <div ><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="m466.752 512-90.496-90.496a32 32 0 0 1 45.248-45.248L512 466.752l90.496-90.496a32 32 0 1 1 45.248 45.248L557.248 512l90.496 90.496a32 32 0 1 1-45.248 45.248L512 557.248l-90.496 90.496a32 32 0 0 1-45.248-45.248L466.752 512z"></path><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z"></path></svg>
+        <div @click="logOut"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="m466.752 512-90.496-90.496a32 32 0 0 1 45.248-45.248L512 466.752l90.496-90.496a32 32 0 1 1 45.248 45.248L557.248 512l90.496 90.496a32 32 0 1 1-45.248 45.248L512 557.248l-90.496 90.496a32 32 0 0 1-45.248-45.248L466.752 512z"></path><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z"></path></svg>
           &nbsp;&nbsp;注销账号
         </div>
       </div>
       <div v-else>
         <div>未登录</div>
-        <div class="login"><a href="" target="_self">登录 / 注册</a></div>
+        <div class="login"><a href="login" target="_self">登录 / 注册</a></div>
       </div>
     </div>
     <ul>
@@ -36,7 +36,7 @@ export default {
   name: 'NaviBar',
   data() {
     return {
-      isLogin: false,
+      isLogin: true,
       userName: "user",
       defaultSrc: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       avatorSrc: '',
@@ -56,10 +56,22 @@ export default {
     LookOut() {
       this.isLookInfo=false;
       this.imgSize="height:45px;width:45px";
+    },
+    logOut() {
+      this.isLogin=false;
+      this.LookOut();
+      this.avatorSrc=this.defaultSrc;
+      this.$store.dispatch("clearUserInfo");
     }
   },
   created() {
-    this.avatorSrc=this.defaultSrc;
+    this.isLogin=this.$store.getters.isLogin;
+    if(this.isLogin)
+    {
+      // avator src
+      this.avatorSrc=this.defaultSrc;
+    }
+    else this.avatorSrc=this.defaultSrc;
   }
 }
 </script>

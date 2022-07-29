@@ -9,6 +9,8 @@ export default {
   name: 'HomePage',
   data() {
     return {
+      email: "",
+      
     }
   },
   components: {
@@ -18,7 +20,7 @@ export default {
 
   },
   created() {
-
+    this.email=this.$store.getters.getUser;
   }
 }
 </script>

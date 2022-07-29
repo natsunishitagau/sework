@@ -43,6 +43,8 @@ export default {
         console.log(res)
         if(res.data.result === 0){
           alert("登录成功!")
+          that.$store.dispatch("saveUserInfo",that.email);
+          that.$router.push("home")
         }
         else if(res.data.result === 2){
           alert("邮箱不存在！")
