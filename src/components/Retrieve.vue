@@ -8,11 +8,11 @@
 
         <form action="">
 
-          <div id="email" class="input" aria-placeholder="邮箱"><input type="text" v-model="email" @keyup="checkEmail(email)"><span v-show="emailWrong">邮箱格式错误</span></div>
+          <div id="email" class="input"><input type="text" v-model="email" @keyup="checkEmail(email)" placeholder="邮箱"><span v-show="emailWrong">邮箱格式错误</span></div>
           <p><button id="getEmailCode" type="button" @click="sendEmail">点击获取验证码</button></p>
-          <div id="emailCode" class="input" aria-placeholder="邮箱验证码"><input type="text" v-model="code"></div>
-          <div id="password" class="input" aria-placeholder="新密码"><input type="password" v-model="password1" @keyup="checkPassword1(password1)"><span v-show="passwordWrong">密码应为6~20位且包含字母与数字</span></div>
-          <div id="repeat" class="input" aria-placeholder="确认密码"><input type="password" v-model="password2" @keyup="checkPassword2(password2)"><span v-show="twoPasswordWrong">两次密码不一致</span></div>
+          <div id="emailCode" class="input"><input type="text" v-model="code" placeholder="邮箱验证码"></div>
+          <div id="password" class="input" ><input type="password" v-model="password1" @keyup="checkPassword1(password1)" placeholder="新密码"><span v-show="passwordWrong">密码应为6~20位且包含字母与数字</span></div>
+          <div id="repeat" class="input"><input type="password" v-model="password2" @keyup="checkPassword2(password2)" placeholder="确认密码"><span v-show="twoPasswordWrong">两次密码不一致</span></div>
 
           <p>
             <a id="login" href="login" class="input">点击跳转登录</a>
@@ -59,22 +59,22 @@ export default {
     sendEmail(){
       const that = this
       if(that.emailWrong){
-        alert("邮箱格式错误")
+        that.$message.error("邮箱格式错误")
       }else{
         this.$axios.post('/user/changePasswordEmail/', this.$qs.stringify({
           email: that.email
         })).then(res =>{
           console.log(res);
           if(res.data.result === 0){
-            alert("发送成功！")
+            that.$message.success("发送成功！")
           }
           else if(res.data.result === 2){
-            alert("邮箱未注册！")
+            that.$message.error("邮箱未注册！")
           }
           else if(res.data.result === 3){
-            alert("发送失败，请检查邮箱是否正确！")
+            that.$message.error("发送失败，请检查邮箱是否正确！")
           }else{
-            alert("请求错误")
+            that.$message.error("请求错误")
           }
         })
       }
@@ -89,22 +89,22 @@ export default {
         })).then(res =>{
           console.log(res)
           if(res.data.result === 0){
-            alert("修改密码成功!")
+            that.$message.success("修改密码成功!")
             that.nowHref = 'login'
           }
           else if(res.data.result === 2){
-            alert("邮箱不存在!")
+            that.$message.error("邮箱不存在!")
           }
           else if(res.data.result === 3){
-            alert("邮箱验证码错误!")
+            that.$message.error("邮箱验证码错误!")
           }
           else{
-            alert("请求方式错误！")
+            that.$message.error("请求方式错误！")
           }
         })
       }
       else{
-        alert("输入信息有误！")
+        that.$message.error("输入信息有误！")
       }
     }
   }
@@ -115,6 +115,10 @@ export default {
 * {
   margin: 0;
   padding: 0;
+}
+
+input::-webkit-input-placeholder{
+  color:  rgba(125, 116, 255,.8);
 }
 
 .container {

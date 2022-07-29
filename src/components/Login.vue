@@ -42,17 +42,21 @@ export default {
       })).then(res =>{
         console.log(res)
         if(res.data.result === 0){
-          alert("登录成功!")
-          that.$router.push('home')
+          that.$message({
+            message:'登录成功！',
+            type:'success'
+          })
+          that.$store.dispatch("saveUserInfo",that.email);
+          that.$router.push("home")
         }
         else if(res.data.result === 2){
-          alert("邮箱不存在！")
+          that.$message.error("邮箱不存在！")
         }
         else if(res.data.result === 3){
-          alert("密码不正确！")
+          that.$message.error("密码错误！")
         }
         else{
-          alert("请求方式错误！")
+          that.$message.error("请求方式错误！")
         }
       })
     }
@@ -65,11 +69,9 @@ export default {
   margin: 0;
   padding: 0;
 }
-
 input::-webkit-input-placeholder{
   color:  rgba(125, 116, 255,.8);
 }
-
 .container {
   height: 100vh;
   width: 100vw;
@@ -78,11 +80,9 @@ input::-webkit-input-placeholder{
   justify-content: center;
   background: url("../assets/星空.jpg") no-repeat;
 }
-
 .container {
   position: fixed;
 }
-
 .panel {
   position: absolute;
   top: 50%;
@@ -97,7 +97,6 @@ input::-webkit-input-placeholder{
   box-shadow: 0 15px 25px rgba(0,0,0,.5);
   border-radius: 10px;
 }
-
 .switch h1 {
   text-align: center;
   font-size: 1.4rem;
@@ -105,7 +104,6 @@ input::-webkit-input-placeholder{
   border-bottom: rgba(125, 116, 255,.8) solid 2px;
   cursor: default;
 }
-
 .input input {
   outline: none;
   width: 100%;
@@ -115,7 +113,6 @@ input::-webkit-input-placeholder{
   color: rgba(37, 215, 202, 0.84);
   font-size: 1rem;
 }
-
 .input::after {
   content: attr(aria-placeholder);
   position: absolute;
@@ -125,47 +122,38 @@ input::-webkit-input-placeholder{
   color: rgba(125, 116, 255, 0.44);
   transition: .3s;
 }
-
 .input.focus::after {
   top: -70%;
   font-size: 1rem;
 }
-
 .input#forget {
   color: #7d74ff;
   font-size: 0.8rem;
   text-decoration: none;
 }
-
 .input#forget:hover {
   color: rgba(138, 143, 255, 0.4);
 }
-
 .input#signUp {
   color: #7d74ff;
   font-size: 0.8rem;
   text-decoration: none;
 }
-
 .input#signUp:hover {
   color: rgba(138, 143, 255, 0.4);
 }
-
 form p {
   text-align: center;
 }
-
 form span {
   color: #7d74ff;
   font-size: 0.8rem;
   cursor: default;
 }
-
 form {
   width: 12rem;
   margin: 1rem 0 0;
 }
-
 form .input {
   position: relative;
   opacity: 1;
@@ -173,15 +161,12 @@ form .input {
   margin: 2rem 0 0;
   height: 42px;
 }
-
 form .input#userName {
   margin: 3rem 0 0;
 }
-
 form .input#password {
   height: 1.6rem;
 }
-
 form button {
   display: block;
   border: none;
@@ -194,7 +179,6 @@ form button {
   box-shadow: 0 0 8px #8a8fff;
   cursor: pointer;
 }
-
 form button:hover {
   border: none;
   outline: none;

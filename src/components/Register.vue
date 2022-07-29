@@ -67,7 +67,7 @@ export default {
     sendEmail(){
       const that = this
       if(that.emailWrong){
-        alert("邮箱格式错误")
+        that.$message.error('邮箱格式错误！')
       }
       else{
         this.$axios.post('/user/registerEmail/', this.$qs.stringify({
@@ -75,15 +75,15 @@ export default {
         })).then(res =>{
           console.log(res);
           if(res.data.result === 0){
-            alert("发送成功！")
+            that.$message.success('发送成功！')
           }
           else if(res.data.result === 2){
-            alert("邮箱已被注册！")
+            that.$message.error('邮箱已被注册！')
           }
           else if(res.data.result === 3){
-            alert("发送失败，请检查邮箱是否正确！")
+            that.$message.error("发送失败，请检查邮箱是否正确！")
           }else{
-            alert("请求错误!")
+            that.$message.error("请求错误!")
           }
         })
       }
@@ -99,22 +99,22 @@ export default {
         })).then(res =>{
           console.log(res);
           if(res.data.result === 0){
-            alert("注册成功!")
+            that.$message.success("注册成功!")
             that.nowHref = 'login'
           }
           else if(res.data.result === 2){
-            alert("邮箱已注册!")
+            that.$message.error("邮箱已注册!")
           }
           else if(res.data.result === 3){
-            alert("邮箱验证码错误!")
+            that.$message.error("邮箱验证码错误!")
           }
           else{
-            alert("请求方式错误！")
+            that.$message.error("请求方式错误！")
           }
         })
       }
       else{
-        alert("输入信息有误！")
+        that.$message.error("输入信息有误！")
       }
     }
   }
