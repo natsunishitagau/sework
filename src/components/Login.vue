@@ -8,8 +8,8 @@
 
         <form action="">
 
-          <div id="userName" class="input" aria-placeholder="邮箱"><input type="text" v-model="email"></div>
-          <div id="password" class="input" aria-placeholder="密码"><input type="password" v-model="password"></div>
+          <div id="userName" class="input"><input type="text" v-model="email" placeholder="邮箱"></div>
+          <div id="password" class="input"><input type="password" v-model="password" placeholder="密码"></div>
 
           <p>
             <a id="signUp" href="register" class="input">跳转注册</a>
@@ -63,6 +63,10 @@ export default {
 * {
   margin: 0;
   padding: 0;
+}
+
+input::-webkit-input-placeholder{
+  color:  rgba(125, 116, 255,.8);
 }
 
 .container {

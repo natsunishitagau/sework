@@ -3,21 +3,22 @@
     <div class="panel">
       <div class="content">
         <div class="switch">
-          <h1 id="signUp">注册</h1>
+          <h1 id="signUp">忘记密码</h1>
         </div>
 
         <form action="">
 
-          <div id="userName" class="input" ><input type="text" placeholder="用户名" v-model="nickname" @keyup="checkNickname(nickname)"><span v-show="nicknameWrong">用户名应为1-10位汉字、字母或数字</span></div>
-          <div id="email" class="input"><input type="text" placeholder="邮箱" v-model="email" @keyup="checkEmail(email)"><span v-show="emailWrong">邮箱格式错误</span></div>
-          <button id="getEmailCode" @click="sendEmail()" type="button">点击获取验证码</button>
-          <div id="code" class="input"><input type="text" placeholder="邮箱验证码" v-model="code"></div>
-          <div id="password" class="input"><input type="password" placeholder="密码" v-model="password1" @keyup="checkPassword1(password1)"><span v-show="passwordWrong">密码应为6~20位且包含字母与数字</span></div>
-          <div id="repeat" class="input"><input type="password" placeholder="确认密码" v-model="password2" @keyup="checkPassword2(password2)"><span v-show="twoPasswordWrong">两次密码不一致</span></div>
+          <div id="email" class="input" aria-placeholder="邮箱"><input type="text" v-model="email" @keyup="checkEmail(email)"><span v-show="emailWrong">邮箱格式错误</span></div>
+          <p><button id="getEmailCode" type="button" @click="sendEmail">点击获取验证码</button></p>
+          <div id="emailCode" class="input" aria-placeholder="邮箱验证码"><input type="text" v-model="code"></div>
+          <div id="password" class="input" aria-placeholder="新密码"><input type="password" v-model="password1" @keyup="checkPassword1(password1)"><span v-show="passwordWrong">密码应为6~20位且包含字母与数字</span></div>
+          <div id="repeat" class="input" aria-placeholder="确认密码"><input type="password" v-model="password2" @keyup="checkPassword2(password2)"><span v-show="twoPasswordWrong">两次密码不一致</span></div>
+
           <p>
-            <a id="login" href="login" class="input">已有账户？点击登录</a>
+            <a id="login" href="login" class="input">点击跳转登录</a>
           </p>
-          <button id="register" onclick="location.href= nowHref" type="button" @click="registerIn()">注册</button>
+
+          <button onclick="location.href='login'" id="reset" type="button" @click="changePassword">提交更改</button>
 
         </form>
       </div>
@@ -27,29 +28,20 @@
 
 <script>
 export default {
-  name: "RegisterVue",
+  name: "RetrieveVue",
   data(){
     return{
-      nowHref:'register',
-      nickname:'',
-      password1:'',
-      password2:'',
       email:'',
       code:'',
-      result:-1,
-      message:'',
-      nicknameWrong:false,
+      password1:'',
+      password2:'',
       emailWrong:false,
       passwordWrong:false,
-      twoPasswordWrong:false
+      twoPasswordWrong:false,
+      nowHref:'retrieve'
     }
   },
   methods:{
-    checkNickname(nicknameIn){
-      const that = this
-      const pattern = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]{1,10}$")
-      that.nicknameWrong = !(pattern.test(nicknameIn))
-    },
     checkEmail(emailIn){
       const that = this
       const pattern = new RegExp("^[\\w-]+@[\\w-]+\\.(com|net|org|edu|mil|tv|biz|info)$")
@@ -66,37 +58,42 @@ export default {
     },
     sendEmail(){
       const that = this
-      this.$axios.post('/user/registerEmail/', this.$qs.stringify({
-        email: that.email
-      })).then(res =>{
-        console.log(res);
-        if(res.data.result === 0){
-          alert("发送成功！")
-        }
-        else if(res.data.result === 2){
-          alert("邮箱已被注册！")
-        }
-        else if(res.data.result === 3){
-          alert("发送失败，请检查邮箱是否正确！")
-        }
-      })
-    },
-    registerIn(){
-      const that = this
-      if(!that.nicknameWrong && !that.emailWrong && !that.passwordWrong && !that.twoPasswordWrong){
-        this.$axios.post('/user/register/', this.$qs.stringify({
-          nickname: that.nickname,
-          password: that.password1,
-          email: that.email,
-          code: that.code
+      if(that.emailWrong){
+        alert("邮箱格式错误")
+      }else{
+        this.$axios.post('/user/changePasswordEmail/', this.$qs.stringify({
+          email: that.email
         })).then(res =>{
           console.log(res);
           if(res.data.result === 0){
-            alert("注册成功!")
+            alert("发送成功！")
+          }
+          else if(res.data.result === 2){
+            alert("邮箱未注册！")
+          }
+          else if(res.data.result === 3){
+            alert("发送失败，请检查邮箱是否正确！")
+          }else{
+            alert("请求错误")
+          }
+        })
+      }
+    },
+    changePassword(){
+      const that = this
+      if(!that.emailWrong && !that.passwordWrong && !that.twoPasswordWrong && that.email.length !==0 && that.password1.length !==0 && that.password2.length !==0){
+        this.$axios.post('user/changePassword/', this.$qs.stringify({
+          email: that.email,
+          code: that.code,
+          newPassword: that.password1
+        })).then(res =>{
+          console.log(res)
+          if(res.data.result === 0){
+            alert("修改密码成功!")
             that.nowHref = 'login'
           }
           else if(res.data.result === 2){
-            alert("邮箱已注册!")
+            alert("邮箱不存在!")
           }
           else if(res.data.result === 3){
             alert("邮箱验证码错误!")
@@ -120,9 +117,6 @@ export default {
   padding: 0;
 }
 
-input::-webkit-input-placeholder{
-  color:  rgba(125, 116, 255,.8);
-}
 .container {
   height: 100vh;
   width: 100vw;
@@ -227,33 +221,29 @@ form .input {
   height: 42px;
 }
 
-form .input#userName {
+form .input#email {
   margin: 3rem 0 0;
 }
 
-form .input#password {
-  height: 1.6rem;
-}
-
-form button#register {
+form button#reset {
   display: block;
   border: none;
   outline: none;
-  margin: 2rem 61px 0;
-  width: 56px;
-  height: 56px;
+  margin: 2rem 56px 0;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   background: linear-gradient(90deg, #8a8fff, rgb(216, 174, 255));
   box-shadow: 0 0 8px #8a8fff;
   cursor: pointer;
 }
 
-form button#register:hover {
+form button#reset:hover {
   border: none;
   outline: none;
   margin: 2rem -7px 0;
   width: 100%;
-  height: 3.5rem;
+  height: 66px;
   border-radius: 3rem;
   background: linear-gradient(90deg, rgba(138, 143, 255, 0.75), rgba(216, 174, 255, 0.75));
   box-shadow: 0 0 8px #8a8fff;
@@ -261,6 +251,7 @@ form button#register:hover {
   color: rgba(0,0,0,0.6);
   transition: .4s;
 }
+
 form button#getEmailCode {
   display: block;
   border: none;
@@ -271,10 +262,13 @@ form button#getEmailCode {
   box-shadow: 0 0 8px #8a8fff;
   cursor: pointer;
   color: #d3c2ff;
+
 }
 
 form button#getEmailCode:hover {
   background: linear-gradient(90deg, rgba(138, 143, 255, 0.5), rgba(182, 130, 255, 0.51));
   color: rgba(211, 194, 255, 0.7);
+
 }
+
 </style>
