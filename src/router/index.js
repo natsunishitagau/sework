@@ -9,7 +9,27 @@ const routes = [
         path: '/home',
         name: 'home',
         component:() =>import('../components/HomePage.vue')
-    }
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component:() =>import('../components/Login.vue')
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component:() =>import('../components/Register.vue')
+    },
+    {
+        path: '/retrieve',
+        name: 'retrieve',
+        component:() =>import('../components/Retrieve.vue')
+    },
+    {
+        path: '/userCenter',
+        name: 'userCenter',
+        component:() =>import('../components/UserCenter.vue')
+    },
 ];
 
 const router = createRouter({
