@@ -1,6 +1,6 @@
 <template>
   <NaviBar></NaviBar>
-  <p>This is the Home Page a</p>
+  <p>Welcome 墨书</p>
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
 
   },
   created() {
-    this.email=this.$store.getters.getUser;
+    
   }
 }
 </script>

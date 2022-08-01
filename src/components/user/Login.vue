@@ -42,11 +42,11 @@ export default {
       })).then(res =>{
         console.log(res)
         if(res.data.result === 0){
-          that.$message({
-            message:'登录成功！',
-            type:'success'
-          })
-          that.$store.dispatch("saveUserInfo",that.email);
+          that.$message.success('登录成功！')
+          sessionStorage.setItem("email",that.email);
+          sessionStorage.setItem("isLogin",true);
+          sessionStorage.setItem("nickname",res.data.nickname)
+          sessionStorage.setItem("src",'http://81.70.16.241/SummerTermBack'+res.data.avatarUrl)
           that.$router.push("home")
         }
         else if(res.data.result === 2){
@@ -78,7 +78,7 @@ input::-webkit-input-placeholder{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url("../assets/星空.jpg") no-repeat;
+  background: url("../../assets/星空.jpg") no-repeat;
 }
 .container {
   position: fixed;
