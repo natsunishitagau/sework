@@ -24,7 +24,12 @@ const routes = [
         path: '/retrieve',
         name: 'retrieve',
         component:() =>import('../components/Retrieve.vue')
-    }
+    },
+    // {
+    //     path: '/userCenter',
+    //     name: 'userCenter',
+    //     component:() =>import('../components/UserCenter.vue')
+    // }
 ];
 
 const router = createRouter({
