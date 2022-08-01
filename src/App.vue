@@ -46,6 +46,7 @@ ul
   background-color: transparent;
   border-radius: 32px;
 }
+<<<<<<< HEAD
 body
   {
     margin: 0;
@@ -80,4 +81,6 @@ body
     background-color: transparent;
     border-radius: 32px;
   }
+=======
+>>>>>>> e0facdf7a05ae5a022734d5b90216e902172d308
 </style>

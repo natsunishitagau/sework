@@ -30,11 +30,14 @@ const routes = [
     //     name: 'userCenter',
     //     component:() =>import('../components/UserCenter.vue')
     // }
+<<<<<<< HEAD
     {
         path: '/userCenter',
         name: 'userCenter',
         component:() =>import('../components/UserCenter.vue')
     }
+=======
+>>>>>>> e0facdf7a05ae5a022734d5b90216e902172d308
 ];
 
 const router = createRouter({
