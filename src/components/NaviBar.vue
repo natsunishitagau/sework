@@ -33,6 +33,7 @@
     </ul>
   </div>
   <el-dialog title="修改头像" v-model="DialogVisible" width="35%" :modal-append-to-body="false" center @close="DialogClosed">
+<<<<<<< HEAD
     <el-form ref="avatarRef" label-width="110px" enctype="multipart/form-data">
       <div style="margin-left: 155px">点击选取头像</div>
       <el-form-item>
@@ -55,6 +56,30 @@
         <el-button type="primary" @click="changeAvatar">确定</el-button>
       </span>
   </el-dialog>
+=======
+      <el-form ref="avatarRef" label-width="110px" enctype="multipart/form-data">
+        <div style="margin-left: 155px">点击选取头像</div>
+        <el-form-item>
+          <el-upload
+              class="avatar-uploader"
+              action=""
+              ref="upload"
+              :http-request="upload"
+              :show-file-list="false"
+              :auto-upload="false"
+              :before-upload="beforeAvatarUpload"
+              :on-change="filePreview">
+            <img v-if="newAvatarSrc" :src="newAvatarSrc" class="avatar-style" />
+            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <span name="footer" class="dialog-footer">
+        <el-button @click="DialogClosed(false)">取消</el-button>
+        <el-button type="primary" @click="changeAvatar">确定</el-button>
+      </span>
+    </el-dialog>
+>>>>>>> 7dca9f06ac7b9cf41779d2741a37393d44944a7b
 </template>
 
 <script>
@@ -306,4 +331,8 @@ li:hover
   height: 178px;
   display: block;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7dca9f06ac7b9cf41779d2741a37393d44944a7b
 </style>
