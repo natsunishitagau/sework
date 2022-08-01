@@ -17,7 +17,7 @@
           <p>
             <a id="login" href="login" class="input">已有账户？点击登录</a>
           </p>
-          <button id="register" onclick="location.href= nowHref" type="button" @click="registerIn()">注册</button>
+          <button id="register" type="button" @click="registerIn()">注册</button>
 
         </form>
       </div>
@@ -30,7 +30,6 @@ export default {
   name: "RegisterVue",
   data(){
     return{
-      nowHref:'register',
       nickname:'',
       password1:'',
       password2:'',
@@ -100,7 +99,7 @@ export default {
           console.log(res);
           if(res.data.result === 0){
             that.$message.success("注册成功!")
-            that.nowHref = 'login'
+            that.$router.push("login")
           }
           else if(res.data.result === 2){
             that.$message.error("邮箱已注册!")

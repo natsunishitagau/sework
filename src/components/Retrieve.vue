@@ -9,7 +9,7 @@
         <form action="">
 
           <div id="email" class="input"><input type="text" v-model="email" @keyup="checkEmail(email)" placeholder="邮箱"><span v-show="emailWrong">邮箱格式错误</span></div>
-          <p><button id="getEmailCode" type="button" @click="sendEmail">点击获取验证码</button></p>
+          <p><button id="getEmailCode" type="button" @click="sendEmail()">点击获取验证码</button></p>
           <div id="emailCode" class="input"><input type="text" v-model="code" placeholder="邮箱验证码"></div>
           <div id="password" class="input" ><input type="password" v-model="password1" @keyup="checkPassword1(password1)" placeholder="新密码"><span v-show="passwordWrong">密码应为6~20位且包含字母与数字</span></div>
           <div id="repeat" class="input"><input type="password" v-model="password2" @keyup="checkPassword2(password2)" placeholder="确认密码"><span v-show="twoPasswordWrong">两次密码不一致</span></div>
@@ -93,7 +93,7 @@ export default {
             that.nowHref = 'login'
           }
           else if(res.data.result === 2){
-            that.$message.error("邮箱不存在!")
+            that.$message.error("邮箱未注册!")
           }
           else if(res.data.result === 3){
             that.$message.error("邮箱验证码错误!")
