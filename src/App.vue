@@ -12,7 +12,6 @@ export default {
 </script>
 
 <style>
-<<<<<<< HEAD
 body
 {
   margin: 0;
@@ -47,9 +46,7 @@ ul
   background-color: transparent;
   border-radius: 32px;
 }
-</style>
-=======
-  body
+body
   {
     margin: 0;
     padding: 0;
@@ -84,4 +81,3 @@ ul
     border-radius: 32px;
   }
 </style>
->>>>>>> 7dca9f06ac7b9cf41779d2741a37393d44944a7b
