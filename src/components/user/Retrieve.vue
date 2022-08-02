@@ -127,7 +127,7 @@ input::-webkit-input-placeholder{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url("../assets/星空.jpg") no-repeat;
+  background: url("../../assets/星空.jpg") no-repeat;
 }
 
 .container {

@@ -3,12 +3,14 @@ const user = {
     state() {
         return {
             user: "",
-            isLogin:false
+            isLogin: false,
+            src: ""
         }
     },
     getters: {
         getUser: state=>state.user,
-        isLogin: state=>state.isLogin
+        isLogin: state=>state.isLogin,
+        src: state=>state.src
     },
     mutations: {
         userStorage (state, value) {
@@ -19,6 +21,7 @@ const user = {
         removeStorage (state) {
             state.user = null
             state.isLogin = false
+            state.src= null
             localStorage.removeItem(key)
         },
 
