@@ -5,17 +5,26 @@
     <div class="info">
       <div>
         <el-form :model="form" label-width="120px">
+          <el-form-item v-show="!nickRight">
+            用户名应为1~10位的汉字、字母或数字。
+          </el-form-item>
           <el-form-item label="用户名：">
-            <el-input v-model="form.nickname" />
+            <el-input v-model="form.nickname" @keyup="checkNickname"/>
+          </el-form-item>
+
+          <el-form-item v-show="!realRight">
+            真实姓名应为1~20位, 不能有数字或特殊字符。
           </el-form-item>
           <el-form-item label="真实姓名：">
-            <el-input v-model="form.realname" />
+            <el-input v-model="form.realname" @keyup="checkRealname"/>
           </el-form-item>
           <el-form-item label="邮箱：">
             <el-input v-model="form.email" disabled/>
           </el-form-item>
+
           <el-form-item label="个人简介：">
-            <el-input v-model="form.description" type="textarea" />
+            <el-input v-model="form.description" show-word-limit :rows="5" resize="none"
+            type="textarea" placeholder="个人简介" maxlength="100"/>
           </el-form-item>
         </el-form>
       </div>
@@ -65,12 +74,22 @@ export default {
       },
       DialogVisible: false,
       newAvatarSrc: "",
+      nickRight: true,
+      realRight: true,
     }
   },
   methods: {
+    checkNickname() {
+      const pattern = new RegExp("^[\u4e00-\u9fa5a-zA-Z0-9_]{1,10}$")
+        this.nickRight = pattern.test(this.form.nickname)
+    },
+    checkRealname() {
+      const pattern = new RegExp("^[\u4e00-\u9fa5a-zA-Z_]{1,20}$")
+        this.realRight = pattern.test(this.form.realname)
+    },
     getInfo() {
       var that=this;
-      this.avatarSrc=sessionStorage.getItem("src");
+      this.avatarSrc=sessionStorage.getItem("src")
       this.$axios.post('/user/checkUserInfo/',this.$qs.stringify(this.form))
       .then(res =>{
         console.log(res);
@@ -80,15 +99,16 @@ export default {
       })
     },
     changeInfo() {
-      //check data
-
-      //
-      var that=this;
-      this.$axios.post('/user/changeUserInfo/',this.$qs.stringify(this.form))
-      .then(res =>{
-        console.log(res);
-        that.$message.success("修改信息成功！")
-      })
+      if(this.nickRight&&this.realRight)
+      {
+        var that=this;
+        this.$axios.post('/user/changeUserInfo/',this.$qs.stringify(this.form))
+        .then(res =>{
+          console.log(res);
+          that.$message.success("修改信息成功！")
+        })
+      }
+      else this.$message.warning("请按照提示修改信息！")
     },
     updateAvatar(){
       console.log("aaaaa")
@@ -128,16 +148,19 @@ export default {
       console.log(res);
       if (res.result === 0) {
         sessionStorage.setItem('src', 'http://81.70.16.241/SummerTermBack' + res.avatarUrl);
-        this.avatarSrc = 'http://81.70.16.241/SummerTermBack' + res.avatarUrl;
+        this.avatarSrc = sessionStorage.getItem("src")
         this.newAvatarSrc = '';
         this.$message.success("更改头像成功");
-        this.$router.push({name:"userInfo"});
+        this.$router.go(0);
       }
       this.DialogVisible=false;
     },
   },
   created() {
     this.form.email=sessionStorage.getItem("email");
+    if(!sessionStorage.getItem("isLogin"))
+      this.$router.push({name:"login"});
+      
     this.getInfo();
   }
 }
@@ -176,7 +199,7 @@ export default {
   .change
   {
     float:left;
-    margin-left: 20%;
+    margin-left: 20.5%;
     height: 36px;
     line-height: 36px;
     width: 120px;

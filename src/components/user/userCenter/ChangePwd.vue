@@ -6,13 +6,24 @@
       <div>
         <el-form :model="form" label-width="120px">
           <el-form-item label="原密码：">
-            <el-input v-model="form.password" />
+            <el-input v-model="form.oldPassword" type="password"/>
           </el-form-item>
           <el-form-item>
             <a href="/retrieve" blank="_self">忘记密码？</a>
           </el-form-item>
+
+          <el-form-item v-show="!pwdRight"> 
+            密码应为6~20位且包含字母与数字
+          </el-form-item>
+          <el-form-item label="新密码：">
+            <el-input v-model="password1" @keyup="checkPassword1" type="password"/>
+          </el-form-item>
+
+          <el-form-item  v-show="!same">
+            两次密码不一致
+          </el-form-item>
           <el-form-item label="确认密码：">
-            <el-input v-model="form.password2" />
+            <el-input v-model="password2" @keyup="checkPassword2" type="password"/>
           </el-form-item>
         </el-form>
       </div>
@@ -30,24 +41,50 @@ export default {
     return {
       form: {
         email: "",
-        password: "",
-        password2: ""
+        oldPassword: "",
+        newPassword: ""
       },
+      
+      password1: "",
+      password2: "",
+      pwdRight: true,
+      same: true
     }
   },
   methods: {
+    checkPassword1() {
+      const pattern = new RegExp( /^(?=.*[a-zA-Z])(?=.*\d)[^]{6,20}$/)
+      this.pwdRight = pattern.test(this.password1)
+    },
+    checkPassword2() {
+      this.same = (this.password1===this.password2)
+    },
     changePwd() {
-      /*
-      if(this.password===this.password2)
+      if(this.pwdRight&&this.same)
       {
-        
+        var that=this;
+        this.form.email=sessionStorage.getItem("email");
+        this.form.newPassword=this.password1;
+        console.log(this.form)
+        this.$axios.post('/user/changePassword/',this.$qs.stringify(this.form))
+        .then(res =>{
+          console.log(res);
+          if(res.data.result==0)
+          {
+            that.$message.success("修改密码成功！请重新登录。")
+            sessionStorage.setItem("isLogin","")
+            that.$router.push("/login")
+          }
+          else if(res.data.result==1) that.$message.error("密码错误！")
+          else that.$message.error("新密码不能与旧密码相同！")
+        })
       }
-      else 
-      {
-        //not same
-      }
-      */
+      else this.$message.warning("请检查新密码格式！")
     }
+  },
+  created() {
+    if(!sessionStorage.getItem("isLogin"))
+      this.$router.push({name:"login"});
   }
 }
 </script>
@@ -69,14 +106,14 @@ export default {
   }
   .info
   {
-    width: 300px;
+    width: 400px;
     margin-top: 50px;
     font-size: 18px;
   }
   .change
   {
     float:left;
-    margin-left: 18%;
+    margin-left: 25%;
     height: 36px;
     line-height: 36px;
     width: 120px;

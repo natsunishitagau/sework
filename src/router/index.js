@@ -39,13 +39,45 @@ const routes = [
             path: 'changePwd',
             name: 'changePwd',
             component:() =>import('../components/user/userCenter/ChangePwd.vue')
+          },
+          {
+            path: 'messageCheck',
+            name: 'messageCheck',
+            component:() =>import('../components/user/userCenter/MessageCheck.vue')
+          },
+          {
+            path: 'messageContent',
+            name: 'messageContent',
+            component:() =>import('../components/user/userCenter/MessageContent.vue')
           }
         ]
     },
     {
         path: '/workSpace',
         name: 'workSpace',
-        component:() =>import('../components/user/WorkSpace.vue')
+        component:() =>import('../components/WorkSpace.vue'),
+        children: [
+          {
+            path: 'recentLook',
+            name: 'recentLook',
+            component:() =>import('../components/personal/RecentLook.vue')
+          },
+          {
+            path: 'inviteMember',
+            name: 'inviteMember',
+            component:() =>import('../components/team/InviteMember.vue')
+          },
+          {
+            path: 'newGroup',
+            name: 'newGroup',
+            component:() =>import('../components/personal/NewGroup.vue')
+          },
+          {
+            path: 'manageMember',
+            name: 'manageMember',
+            component:() =>import('../components/team/ManageMember.vue')
+          },
+        ]
     }
 ];
 
