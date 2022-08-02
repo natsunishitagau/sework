@@ -22,9 +22,8 @@
       <img :src="avatarSrc" @click="updateAvatar"/>
     </div>
     <span class="change" @click="changeInfo">修改信息</span>
-  </div>
 
-  <el-dialog title="修改头像" v-model="DialogVisible" width="35%" :modal-append-to-body="false" center @close="DialogClosed">
+    <el-dialog title="修改头像" v-model="DialogVisible" width="35%" :modal-append-to-body="false" center @close="DialogClosed">
     <el-form ref="avatarRef" label-width="110px" enctype="multipart/form-data">
     <div style="margin-left: 155px">点击选取头像</div>
     <el-form-item>
@@ -48,7 +47,8 @@
       <el-button type="primary" @click="changeAvatar">确定</el-button>
     </span>
   </el-dialog>
-
+  
+  </div>
 </template>
 
 <script>

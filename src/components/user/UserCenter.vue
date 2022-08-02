@@ -13,13 +13,6 @@
     </span>
     <div @click="logOut" class="logout">注销</div>
   </div>
-  <div class="back">
-    <div class="white">
-      <div>
-        <router-view></router-view>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>

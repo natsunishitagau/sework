@@ -63,7 +63,7 @@ export default {
       if(this.isLogin)
       {
         this.isLookInfo=true;
-        this.imgSize="margin-top:60px;height:70px;width:70px";
+        this.imgSize="margin-top:60px;height:80px;width:80px";
       }
     },
     LookOut() {

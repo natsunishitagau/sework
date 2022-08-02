@@ -1,6 +1,8 @@
 <template>
-  <NaviBar></NaviBar>
-  <p>Welcome 墨书</p>
+  <div>
+    <NaviBar></NaviBar>
+    <p>Welcome 墨书</p>
+  </div>
 </template>
 
 <script>
@@ -27,7 +29,8 @@ export default {
 <style scoped>
 p
 {
-  padding-top: 80px;
+  padding-top: 200px;
+  padding-left: 450px;
   font-size: 50px;
 }
 </style>

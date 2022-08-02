@@ -1,4 +1,8 @@
+import Vue from 'vue'
+import Router from 'vue-router'
 import {createRouter, createWebHistory} from 'vue-router'
+
+Vue.use(Router)
 
 const routes = [
     { 
@@ -11,6 +15,11 @@ const routes = [
         component:() =>import('../components/HomePage.vue')
     },
     {
+        path: '/prototype',
+        name: 'prototype',
+        component: () => import('@/views/Prototype'),
+    },
+    {
         path: '/login',
         name: 'login',
         component:() =>import('../components/user/Login.vue')
@@ -19,11 +28,6 @@ const routes = [
         path: '/register',
         name: 'register',
         component:() =>import('../components/user/Register.vue')
-    },
-    {
-        path: '/retrieve',
-        name: 'retrieve',
-        component:() =>import('../components/user/Retrieve.vue')
     },
     {
         path: '/userCenter',
@@ -47,11 +51,9 @@ const routes = [
         name: 'workSpace',
         component:() =>import('../components/user/WorkSpace.vue')
     }
-];
+    
+]
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes: routes
+export default new Router({
+    routes,
 })
-
-export default router
