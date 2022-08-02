@@ -118,6 +118,7 @@ svg
   box-shadow: 0 2px 4px rgb(0 0 0 / 8%);
   width: 100%;
   min-width: 1500px;
+  z-index:999
 }
 .flex-grow
 {

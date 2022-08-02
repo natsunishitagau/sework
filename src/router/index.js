@@ -46,6 +46,11 @@ const routes = [
         path: '/workSpace',
         name: 'workSpace',
         component:() =>import('../components/user/WorkSpace.vue')
+    },
+    {
+        path: '/proInterface',
+        name: 'proInterface',
+        component:() =>import('../components/user/ProInterface')
     }
 ];
 
