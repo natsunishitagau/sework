@@ -77,6 +77,11 @@ const routes = [
             name: 'manageMember',
             component:() =>import('../components/team/ManageMember.vue')
           },
+            {
+                path: 'proInterface',
+                name: 'proInterface',
+                component:() =>import('../components/personal/ProInterface.vue')
+            },
         ]
     }
 ];
