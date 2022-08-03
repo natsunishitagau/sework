@@ -26,7 +26,7 @@
         <el-table-column label="主题" width="360" sortable sort-by="title">
           <template #default="scope">
             <span class="red" v-if="scope.row.read==0"></span>
-            <a :title="scope.row.title" target="_self"
+            <a :title="scope.row.title"
               @click="lookInfo(scope.row.ids)">
             {{scope.row.title}}
             </a>
@@ -58,33 +58,26 @@ export default {
         time: "",
         ID: ""
       },
-      tableData: [
-        {
-          title: "12",
-          time: "11",
-          read: "0",
-          sender: "as",
-          ids: 8
-        }
-      ],
+      tableData: [],
     }
   },
   methods: {
     getInfo() {
       var that=this;
+      this.tableData=[];
       this.$axios.post('/message/checkMessages/',this.$qs.stringify(this.form))
       .then(res =>{
         console.log(res);
         var i;
         for(i=0;i<res.data.titles.length;i++)
         {
-          var group={title:"",time:"",read:"",sender:"",ids:""};
-          group.title=res.data.titiles[i];
-          group.time =res.data.times[i];
-          group.read =res.data.isRead[i];
-          group.sender=res.data.senders[i];
-          group.ids=res.data.IDs[i];
-          that.tableData.push(group);
+          var mes={title:"",time:"",read:"",sender:"",ids:""};
+          mes.title=res.data.titles[i];
+          mes.time =res.data.times[i];
+          mes.read =res.data.isRead[i];
+          mes.sender=res.data.senders[i];
+          mes.ids=res.data.IDs[i];
+          that.tableData.push(mes);
         }
       })
     },

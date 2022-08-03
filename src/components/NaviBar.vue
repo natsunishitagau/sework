@@ -41,7 +41,7 @@ export default {
       avatarSrc: '',
       isLookInfo: false,
       imgSize: "height:45px;width:45px",
-      links: ["workspace","collect","history"],
+      links: ["workSpace","","workSpace/recentLook"],
       items: ["工作台","收藏","历史"],
       DialogVisible: false,
       newAvatarSrc: '',

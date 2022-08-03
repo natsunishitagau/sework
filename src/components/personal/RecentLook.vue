@@ -36,13 +36,7 @@ export default {
         email: "",
 
       },
-      tableData: [
-        {
-          proName:"12",
-          group:"myteam",
-          time:"20220319"
-        }
-      ]
+      tableData: []
     }
   },
   methods: {

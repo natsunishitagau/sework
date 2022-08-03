@@ -69,6 +69,7 @@ export default {
   }
   .sure
   {
+    text-align: center;
     float:left;
     margin-left: 25%;
     height: 36px;

@@ -29,11 +29,12 @@ const routes = [
         path: '/userCenter',
         name: 'userCenter',
         component:() =>import('../components/user/UserCenter.vue'),
+        redirect: {name:'userInfo'},
         children: [
           {
             path: 'userInfo',
             name: 'userInfo',
-            component:() =>import('../components/user/userCenter/UserInfo.vue')
+            component:() =>import('../components/user/userCenter/UserInfo.vue'),
           },
           {
             path: 'changePwd',
@@ -56,6 +57,7 @@ const routes = [
         path: '/workSpace',
         name: 'workSpace',
         component:() =>import('../components/WorkSpace.vue'),
+        redirect: {name:'recentLook'},
         children: [
           {
             path: 'recentLook',
@@ -76,6 +78,16 @@ const routes = [
             path: 'manageMember',
             name: 'manageMember',
             component:() =>import('../components/team/ManageMember.vue')
+          },
+          {
+            path: 'groupProject',
+            name: 'groupProject',
+            component:() =>import('../components/team/GroupProject.vue')
+          },
+          {
+            path: 'recycleBin',
+            name: 'recycleBin',
+            component:() =>import('../components/team/RecycleBin.vue')
           },
         ]
     }
