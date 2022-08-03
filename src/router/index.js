@@ -79,6 +79,7 @@ const routes = [
             name: 'manageMember',
             component:() =>import('../components/team/ManageMember.vue')
           },
+
           {
             path: 'groupProject',
             name: 'groupProject',
@@ -88,6 +89,11 @@ const routes = [
             path: 'recycleBin',
             name: 'recycleBin',
             component:() =>import('../components/team/RecycleBin.vue')
+          },
+          {
+            path: 'proInterface',
+            name: 'proInterface',
+            component:() =>import('../components/personal/ProInterface.vue')
           },
         ]
     }
