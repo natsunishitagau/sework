@@ -15,7 +15,7 @@
           <div id="password" class="input"><input type="password" placeholder="密码" v-model="password1" @keyup="checkPassword1(password1)"><span v-show="passwordWrong">密码应为6~20位且包含字母与数字</span></div>
           <div id="repeat" class="input"><input type="password" placeholder="确认密码" v-model="password2" @keyup="checkPassword2(password2)"><span v-show="twoPasswordWrong">两次密码不一致</span></div>
           <p>
-            <a id="login" href="login" class="input">已有账户？点击登录</a>
+            <a id="login" href="#/login" class="input">已有账户？点击登录</a>
           </p>
           <button id="register" type="button" @click="registerIn()">注册</button>
 
@@ -127,7 +127,7 @@ export default {
 }
 
 input::-webkit-input-placeholder{
-  color:  rgba(125, 116, 255,.8);
+  color:  #aebfc2;
 }
 .container {
   height: 100vh;
@@ -135,7 +135,7 @@ input::-webkit-input-placeholder{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url("../../assets/星空.jpg") no-repeat;
+  background: url("../../../public/墨.png") no-repeat;
 }
 
 .container {
@@ -145,7 +145,7 @@ input::-webkit-input-placeholder{
 .panel {
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 70%;
   transform: translate(-50%,-50%);
   background: rgba(0,0,0,.8);
   display: flex;
@@ -160,8 +160,8 @@ input::-webkit-input-placeholder{
 .switch h1 {
   text-align: center;
   font-size: 1.4rem;
-  color: rgba(125, 116, 255,.8);
-  border-bottom: rgba(125, 116, 255,.8) solid 2px;
+  color: #aebfc2;
+  border-bottom: #aebfc2 solid 2px;
   cursor: default;
 }
 
@@ -170,7 +170,7 @@ input::-webkit-input-placeholder{
   width: 100%;
   border: none;
   background: none;
-  border-bottom: .1rem solid #7d74ff;
+  border-bottom: .1rem solid #809396;
   color: rgba(37, 215, 202, 0.84);
   font-size: 1rem;
 }
@@ -181,7 +181,7 @@ input::-webkit-input-placeholder{
   left: 0;
   top: -20%;
   font-size: 1.1rem;
-  color: rgba(125, 116, 255, 0.44);
+  color: #809396;
   transition: .3s;
 }
 
@@ -191,23 +191,23 @@ input::-webkit-input-placeholder{
 }
 
 .input#forget {
-  color: #7d74ff;
+  color: #809396;
   font-size: 0.8rem;
   text-decoration: none;
 }
 
 .input#forget:hover {
-  color: rgba(138, 143, 255, 0.4);
+  color: #809396;
 }
 
 .input#login {
-  color: #7d74ff;
+  color: #809396;
   font-size: 0.8rem;
   text-decoration: none;
 }
 
 .input#login:hover {
-  color: rgba(138, 143, 255, 0.4);
+  color: #809396;
 }
 
 form p {
@@ -249,8 +249,8 @@ form button#register {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(90deg, #8a8fff, rgb(216, 174, 255));
-  box-shadow: 0 0 8px #8a8fff;
+  background: linear-gradient(90deg, #809396, rgba(0,0,0,0.6));
+  box-shadow: 0 0 8px #809396;
   cursor: pointer;
 }
 
@@ -261,8 +261,8 @@ form button#register:hover {
   width: 100%;
   height: 3.5rem;
   border-radius: 3rem;
-  background: linear-gradient(90deg, rgba(138, 143, 255, 0.75), rgba(216, 174, 255, 0.75));
-  box-shadow: 0 0 8px #8a8fff;
+  background: linear-gradient(90deg, #809396, rgba(0,0,0,0.6));
+  box-shadow: 0 0 8px #809396;
   cursor: pointer;
   color: rgba(0,0,0,0.6);
   transition: .4s;
@@ -273,14 +273,14 @@ form button#getEmailCode {
   outline: none;
   width: 7rem;
   border-radius: 5%;
-  background: linear-gradient(90deg, rgba(138, 143, 255, 0.76), rgba(182, 130, 255, 0.76));
-  box-shadow: 0 0 8px #8a8fff;
+  background: linear-gradient(90deg, #809396, rgba(0,0,0,0.6));
+  box-shadow: 0 0 8px #809396;
   cursor: pointer;
-  color: #d3c2ff;
+  color: #809396;
 }
 
 form button#getEmailCode:hover {
-  background: linear-gradient(90deg, rgba(138, 143, 255, 0.5), rgba(182, 130, 255, 0.51));
-  color: rgba(211, 194, 255, 0.7);
+  background: linear-gradient(90deg, #809396, rgba(0,0,0,0.6));
+  color: #809396;
 }
 </style>
