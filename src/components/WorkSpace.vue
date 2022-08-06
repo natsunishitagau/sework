@@ -9,11 +9,10 @@
                     <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z"></path><path fill="currentColor" d="M480 256a32 32 0 0 1 32 32v256a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32z"></path><path fill="currentColor" d="M480 512h256q32 0 32 32t-32 32H480q-32 0-32-32t32-32z"></path></svg>
                     最近浏览
                 </div>
-                <!--
-                <div>
+                <div @click="collect">
                     <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M283.84 867.84 512 747.776l228.16 119.936a6.4 6.4 0 0 0 9.28-6.72l-43.52-254.08 184.512-179.904a6.4 6.4 0 0 0-3.52-10.88l-255.104-37.12L517.76 147.904a6.4 6.4 0 0 0-11.52 0L392.192 379.072l-255.104 37.12a6.4 6.4 0 0 0-3.52 10.88L318.08 606.976l-43.584 254.08a6.4 6.4 0 0 0 9.28 6.72z"></path></svg>
                     我的收藏
-                </div>-->
+                </div>
                 <div @click="newGroup">
                     <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M352 480h320a32 32 0 1 1 0 64H352a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="M480 672V352a32 32 0 1 1 64 0v320a32 32 0 0 1-64 0z"></path><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z"></path></svg>
                     新建团队
@@ -162,13 +161,18 @@ export default {
             this.form.groupName=this.teams[i];
             sessionStorage.setItem("group",this.form.groupName)
             this.pos=this.poses[i];
-            console.log(this.form.groupName)
+            sessionStorage.setItem("pos",this.pos)
             if(this.$router.currentRoute.path=='/workSpace/manageMember')
+            {
                 this.$router.push({name:'emptyPage'})
+            }
             this.$router.push({name: 'manageMember',params: {name:this.form.groupName}});
         },
         project() {
             this.$router.push({name: 'groupProject'});
+        },
+        collect() {
+            this.$router.push({name: 'collectProject'});
         },
         invite() {
             this.$router.push({name: 'inviteMember'});
@@ -186,6 +190,7 @@ export default {
         this.avatar=sessionStorage.getItem("src");
         this.form.email=sessionStorage.getItem("email");
         this.nickname=sessionStorage.getItem("nickname");
+        this.pos=sessionStorage.getItem("pos");
     },
     beforeCreate() {
         document.getElementsByTagName("html")[0].className="bg";
@@ -199,139 +204,139 @@ export default {
 </script>
 
 <style>
-#app
-{
-    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
-    'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    height: 100vh;
-}
-.bg
-{
-    height: 100%;
-}
+    #app
+    {
+        font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+        'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        height: 100vh;
+    }
+    .bg
+    {
+        height: 100%;
+    }
 </style>
 
 <style scoped>
-svg
-{
-    width: 40px;
-    height:40px;
-}
-.left-navibar
-{
-    color: white;
-    position: absolute;
-    height: 100%;
-    width: 90px;
-    background-color: #343e4f;
-    display: flex;
-    flex-direction: column;
-    font-size: 13px;
-    top: 0;
-    left: 0;
-}
-header
-{
-    margin-top:30px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-header img
-{
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-    border-radius: 50%;
-}
-.switch
-{
-    margin-top: 50px;
-    text-align: center;
-    cursor: pointer;
-}
-div>img
-{
-    width: 42px;
-    height:42px;
-    margin-bottom: 10px;
-}
-.content
-{
-    padding-left: 90px;
-    height: 100%;
-    display: flex;
-    flex: 1;
-}
-.left-navibar2
-{
-    width: 240px;
-    font-size: 15px;
-    height: 100%;
-    flex-direction: column;
-    border-right: 1px solid silver;
-    background-color: rgb(247,247,249);
-}
-.line div:first-child
-{
-    font-size: 20px;
-}
-.line div
-{
-    margin: 15px 20px;
-    padding: 8px 10px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-.line div+div:hover,hr+div:hover
-{
-    background-color: rgb(234, 234, 234);
-}
-.line svg
-{
-    width: 16px;
-    height:16px;
-    margin-right: 10px;
-}
-hr
-{
-    width: 90%;
-}
-.line div:first-child
-{
-    justify-content: center;
-    font-weight: 600;
-}
-.workplace
-{
-    flex: 1;
-    margin: 36px 50px;
-    text-align: left;
-}
-ul
-{
-    max-height:500px;
-    overflow-y:scroll;
-}
-li
-{
-    font-size: 16px;
-    padding: 5px 10px;
-    border-radius: 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-}
-li:hover
-{
-    background-color: rgb(240, 240, 240);;
-}
-a{cursor: pointer;}
-a:hover{text-underline-offset: 1px;text-decoration: underline;}
+    svg
+    {
+        width: 40px;
+        height:40px;
+    }
+    .left-navibar
+    {
+        color: white;
+        position: absolute;
+        height: 100%;
+        width: 90px;
+        background-color: #343e4f;
+        display: flex;
+        flex-direction: column;
+        font-size: 13px;
+        top: 0;
+        left: 0;
+    }
+    header
+    {
+        margin-top:30px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    header img
+    {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+    .switch
+    {
+        margin-top: 50px;
+        text-align: center;
+        cursor: pointer;
+    }
+    div>img
+    {
+        width: 42px;
+        height:42px;
+        margin-bottom: 10px;
+    }
+    .content
+    {
+        padding-left: 90px;
+        height: 100%;
+        display: flex;
+        flex: 1;
+    }
+    .left-navibar2
+    {
+        width: 240px;
+        font-size: 15px;
+        height: 100%;
+        flex-direction: column;
+        border-right: 1px solid silver;
+        background-color: rgb(247,247,249);
+    }
+    .line div:first-child
+    {
+        font-size: 20px;
+    }
+    .line div
+    {
+        margin: 15px 20px;
+        padding: 8px 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    .line div+div:hover,hr+div:hover
+    {
+        background-color: rgb(234, 234, 234);
+    }
+    .line svg
+    {
+        width: 16px;
+        height:16px;
+        margin-right: 10px;
+    }
+    hr
+    {
+        width: 90%;
+    }
+    .line div:first-child
+    {
+        justify-content: center;
+        font-weight: 600;
+    }
+    .workplace
+    {
+        flex: 1;
+        margin: 36px 50px;
+        text-align: left;
+    }
+    ul
+    {
+        max-height:500px;
+        overflow-y:scroll;
+    }
+    li
+    {
+        font-size: 16px;
+        padding: 5px 10px;
+        border-radius: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+    li:hover
+    {
+        background-color: rgb(240, 240, 240);;
+    }
+    a{cursor: pointer;}
+    a:hover{text-underline-offset: 1px;text-decoration: underline;}
 </style>

@@ -1,13 +1,20 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import EmptyPage from '../components/EmptyPage.vue'
 
 Vue.use(Router)
+
+const originalPush = Router.prototype.push
+ 
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err=>err)
+}
 
 const routes = [
     {
         path: '/emptyPage',
         name: 'emptyPage',
-        component: () =>import('../components/EmptyPage.vue')
+        component: EmptyPage
     },
     {
         path: '/',
@@ -24,9 +31,9 @@ const routes = [
         component: () => import('@/views/Prototype'),
     },
     {
-      path: '/workSpace/document',
-      name: 'document',
-      component: () => import('../components/EditDoc.vue')
+        path: '/workSpace/document',
+        name: 'document',
+        component: () => import('../components/EditDoc.vue')
     },
     {
         path: '/workSpace/uml',
@@ -44,9 +51,9 @@ const routes = [
         component:() =>import('../components/user/Register.vue')
     },
     {
-      path: '/retrieve',
-      name: 'retrieve',
-      component: () => import('../components/user/Retrieve.vue')
+        path: '/retrieve',
+        name: 'retrieve',
+        component: () => import('../components/user/Retrieve.vue')
     },
     {
         path: '/userCenter',
@@ -86,6 +93,11 @@ const routes = [
                 path: 'recentLook',
                 name: 'recentLook',
                 component:() =>import('../components/personal/RecentLook.vue')
+            },
+            {
+                path: 'collectProject',
+                name: 'collectProject',
+                component:() =>import('../components/personal/CollectProject.vue')
             },
             {
                 path: 'inviteMember',

@@ -1,10 +1,10 @@
 <template>
-
+  <div></div>
 </template>
 
 <script>
 export default {
-    name: 'EmptyPage',
+    name: 'emptyPage',
     beforeRouteEnter (to, from, next) {
         next(vm => {
             vm.$router.push({name:'manageMember'})

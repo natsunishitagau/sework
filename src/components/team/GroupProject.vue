@@ -15,10 +15,17 @@
             <el-table :data="tableData" height="550" borderstyle="width:100%">
                 <el-table-column label="项目名" width="300">
                     <template #default="scope">
-                        <a :title="scope.row.name"
-                           @click="lookInfo(scope.row)">
-                            {{scope.row.name}}
-                        </a>
+                        <div @mouseenter="show(scope)">
+                          <a :title="scope.row.name"
+                            @click="lookInfo(scope.row)">
+                              {{scope.row.name}}
+                          </a>
+                          &nbsp;&nbsp;
+                          <span v-show="showCollect==scope.$index">
+                            <i class="el-icon-star-on" v-if="scope.row.isCollect" @click="cancelCollect"></i>
+                            <i class="el-icon-star-off" v-else @click="Collect"></i>
+                          </span>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="time" label="创建时间" width="300"></el-table-column>
@@ -92,7 +99,8 @@ export default {
             },
             tableData: [],
             isCreate: false,
-            isRename: false
+            isRename: false,
+            showCollect: -1
         }
     },
     methods: {
@@ -106,10 +114,11 @@ export default {
                     var i;
                     for(i=0;i<res.data.status.length;i++)
                     {
-                        var pro={name:"",time:"",status:""};
+                        var pro={name:"",time:"",status:"",isCollect:""};
                         pro.name=res.data.proNames[i];
                         pro.time=res.data.createTimes[i];
                         pro.status=res.data.status[i];
+                        pro.isCollect=res.data.isCollect[i];
                         that.tableData.push(pro);
                     }
                 })
@@ -141,6 +150,30 @@ export default {
             this.form.proName=name;
             this.form.oldProName=name;
             this.form.newProName=name;
+        },
+        show(item) {
+          this.showCollect=item.$index;
+          this.form.proName=item.row.name;
+          sessionStorage.setItem("project",item.row.name);
+        },
+        cancelCollect() {
+          var that=this;
+            this.$axios.post('/group/cancelCollection/',this.$qs.stringify(this.form))
+                .then(res =>{
+                    console.log(res);
+                    that.$message.success("取消收藏成功！");
+                    that.getInfo();
+                })
+        },
+        Collect() {
+          var that=this;
+          console.log(this.form)
+            this.$axios.post('/group/collectProject/',this.$qs.stringify(this.form))
+                .then(res =>{
+                    console.log(res);
+                    that.$message.success("收藏成功！");
+                    that.getInfo();
+                })
         },
         reName() {
             var that=this;
@@ -220,4 +253,8 @@ header>span
 }
 a{cursor: pointer;}
 a:hover{text-underline-offset: 1px;text-decoration: underline;}
+i
+{
+  cursor:pointer;
+}
 </style>
