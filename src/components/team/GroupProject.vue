@@ -15,7 +15,7 @@
             <el-table :data="tableData" height="550" borderstyle="width:100%">
                 <el-table-column label="项目名" width="300">
                     <template #default="scope">
-                        <div @mouseenter="show(scope)">
+                        <div @mouseenter="show(scope)" @mouseleave="leave">
                           <a :title="scope.row.name"
                             @click="lookInfo(scope.row)">
                               {{scope.row.name}}
@@ -155,6 +155,9 @@ export default {
           this.showCollect=item.$index;
           this.form.proName=item.row.name;
           sessionStorage.setItem("project",item.row.name);
+        },
+        leave() {
+          this.showCollect=-1;
         },
         cancelCollect() {
           var that=this;
