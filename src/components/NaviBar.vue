@@ -106,134 +106,134 @@ export default {
 </script>
 
 <style scoped>
-    .flex-grow {
-        float: left;
-        font-size: 30px;
-        margin-left: 20px;
-        color: #303133;
-        font-weight: bolder;
-    }
-    .flex-grow:hover {
-        cursor: pointer;
-    }
-    svg
-    {
-        height: 18px;
-        width: 18px;
-    }
-    .naviBar
-    {
-        position: fixed;
-        top: 0;
-        display: flex;
-        height: 70px;
-        align-items: center;
-        box-shadow: 0 2px 4px rgb(0 0 0 / 8%);
-        width: 100%;
-        min-width: 1500px;
-    }
-    .flex-grow
-    {
-        flex-grow: 1;
-    }
-    .avatar
-    {
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-        height: 70px;
-    }
-    .avatar img
-    {
-        height: 45px;
-        width: 45px;
-        cursor: pointer;
-        border-radius: 50%;
-        transition: all 0.3s ease;
-        z-index: 1000;
-    }
-    /*
-    .avatar img:hover
-    {
-      padding-top: 60px;
-      height: 70px;
-      width: 70px;
-      transition: all 0.3s ease;
-    }
-    */
-    .info
-    {
-        position: absolute;
-        border: 1px solid rgb(222, 222, 222);
-        background-color: white;
-        padding: 45px 20px 15px 20px;
-        top: 100%;
-        right: 178px;
-        margin-top: -6px;
-        width: 260px;
-        border-radius: 8px;
-        font-size: 20px;
-        font-weight: 600;
-        z-index: 900;
-        cursor: pointer;
-    }
-    .userInfo div
-    {
-        display: flex;
-        align-items: center;
-        text-align: left;
-        font-weight: 400;
-        font-size: 16px;
-        padding: 10px;
-        margin: 2px 8px;
-        border-radius: 8px;
-    }
-    .userInfo div:nth-child(1)
-    {
-        display: block;
-        text-align: center;
-        font-weight: 600;
-        font-size: 22px;
-        margin-bottom: 10px;
-    }
-    .userInfo div:nth-child(2):hover,
-    .userInfo div:nth-child(4):hover
-    {
-        background-color: rgb(240, 240, 240);
-    }
-    .login
-    {
-        font-weight: 300;
-        font-size: 17px;
-        width: 160px;
-        margin-right: 20px;
-        cursor: pointer;
-        user-select: none;
-        -webkit-user-select:none;
-    }
-    .login:hover
-    {
-        text-decoration: underline;
-        text-underline-offset: 2px;
-    }
-    .arow
-    {
-        height: 15px;
-        width: 15px;
-        padding-left: 60px;
-    }
-    ul{margin-right:20px}
-    li
-    {
-        float: left;
-        padding: 0 20px;
-        text-align: center;
-        height: 70px;
-        line-height: 70px;
-        cursor: pointer;
-    }
-    li:hover
-    {
-        background-color: rgb(222, 222, 222);
-    }
+.flex-grow {
+    float: left;
+    font-size: 30px;
+    margin-left: 20px;
+    color: #303133;
+    font-weight: bolder;
+}
+.flex-grow:hover {
+    cursor: pointer;
+}
+svg
+{
+    height: 18px;
+    width: 18px;
+}
+.naviBar
+{
+    position: fixed;
+    top: 0;
+    display: flex;
+    height: 70px;
+    align-items: center;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 8%);
+    width: 100%;
+    min-width: 1500px;
+}
+.flex-grow
+{
+    flex-grow: 1;
+}
+.avatar
+{
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 70px;
+}
+.avatar img
+{
+    height: 45px;
+    width: 45px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+/*
+.avatar img:hover
+{
+  padding-top: 60px;
+  height: 70px;
+  width: 70px;
+  transition: all 0.3s ease;
+}
+*/
+.info
+{
+    position: fixed;
+    border: 1px solid rgb(222, 222, 222);
+    background-color: white;
+    padding: 45px 20px 15px 20px;
+    top: 70px;
+    right: 178px;
+    margin-top: -6px;
+    width: 260px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 600;
+    z-index: 900;
+    cursor: pointer;
+}
+.userInfo div
+{
+    display: flex;
+    align-items: center;
+    text-align: left;
+    font-weight: 400;
+    font-size: 16px;
+    padding: 10px;
+    margin: 2px 8px;
+    border-radius: 8px;
+}
+.userInfo div:nth-child(1)
+{
+    display: block;
+    text-align: center;
+    font-weight: 600;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+.userInfo div:nth-child(2):hover,
+.userInfo div:nth-child(4):hover
+{
+    background-color: rgb(240, 240, 240);
+}
+.login
+{
+    font-weight: 300;
+    font-size: 17px;
+    width: 160px;
+    margin-right: 20px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select:none;
+}
+.login:hover
+{
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.arow
+{
+    height: 15px;
+    width: 15px;
+    padding-left: 60px;
+}
+ul{margin-right:20px}
+li
+{
+    float: left;
+    padding: 0 20px;
+    text-align: center;
+    height: 70px;
+    line-height: 70px;
+    cursor: pointer;
+}
+li:hover
+{
+    background-color: rgb(222, 222, 222);
+}
 </style>
