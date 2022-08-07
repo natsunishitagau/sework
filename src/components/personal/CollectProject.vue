@@ -73,8 +73,8 @@ export default {
         },
         lookPro(pro) {
             const that = this
-            sessionStorage.setItem('project',pro.proName)
-            sessionStorage.setItem('group', pro.group)
+            sessionStorage.setItem('project',pro.name)
+            sessionStorage.setItem('group', pro.team)
             that.$router.push({name:'proInterface'})
         },
         cancel() {
