@@ -84,9 +84,12 @@ export default {
             location.reload();
         },
         userClick() {
-            this.$router.push("userCenter/userInfo");
+            sessionStorage.setItem('loc1','0')
+            this.$router.push("workSpace/recentLook");
         },
         enter(i) {
+            if(i===1)
+                sessionStorage.setItem('loc1','1')
             this.$router.push(this.links[i]);
         }
     },
