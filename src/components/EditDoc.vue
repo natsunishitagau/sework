@@ -76,12 +76,16 @@ export default {
       console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
     },
     saveText() {
+        const that=this;
       const editor = this.editor;
       console.log(editor.getHtml());
       this.form.content=editor.getHtml();
-      var that=this;
-      this.$axios.post('/project/saveDocument/',this.$qs.stringify(this.form))
-      .then(res =>{
+      // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
+      this.$axios.post('/project/saveDocument/',this.$qs.stringify({
+          email: that.form.email,
+          URL: that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName,
+          content: that.form.content
+      })).then(res =>{
         that.$message.success("保存成功")
       })
     },
@@ -104,7 +108,10 @@ export default {
     this.form.groupName=sessionStorage.getItem("group");
     this.form.proName=sessionStorage.getItem("project");
     this.form.docName=sessionStorage.getItem("document"); //名称对没
-    this.$axios.post('/project/checkDocument/',this.$qs.stringify(this.form))
+    this.$axios.post('/project/checkDocument/',this.$qs.stringify({
+        email: sessionStorage.getItem('email'),
+        URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
+    }))
     .then(res =>{
       this.form.content=res.data.content;
       this.html=res.data.content;

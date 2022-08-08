@@ -17,6 +17,11 @@ const routes = [
         component: () =>import('../components/Documents.vue')
     },
     {
+        path: '/prototype',
+        name: 'prototype',
+        component:() =>import('@/components/Prototype.vue')
+    },
+    {
         path: '/emptyPage',
         name: 'emptyPage',
         component: EmptyPage
@@ -29,11 +34,6 @@ const routes = [
         path: '/home',
         name: 'home',
         component:() =>import('../components/HomePage.vue')
-    },
-    {
-        path: '/workSpace/prototype',
-        name: 'prototype',
-        component: () => import('@/views/Prototype'),
     },
     {
         path: '/workSpace/document',
@@ -59,6 +59,18 @@ const routes = [
         path: '/retrieve',
         name: 'retrieve',
         component: () => import('../components/user/Retrieve.vue')
+    },
+    {
+        path: '/proInterface',
+        name: 'proInterface',
+        component:() =>import('../components/ProInterface.vue'),
+        children: [
+            {
+                path: 'prototype',
+                name: 'prototype',
+                component:() =>import('@/components/Prototype.vue')
+            }
+        ]
     },
     {
         path: '/workSpace',
@@ -120,11 +132,6 @@ const routes = [
                 path: 'recycleBin',
                 name: 'recycleBin',
                 component:() =>import('../components/team/RecycleBin.vue')
-            },
-            {
-                path: 'proInterface',
-                name: 'proInterface',
-                component:() =>import('../components/personal/ProInterface.vue')
             },
         ]
     }

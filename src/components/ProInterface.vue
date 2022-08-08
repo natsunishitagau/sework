@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="position: fixed">
     <div>
         <button class="prototypeButton" type="button" @click="getPrototype()">项目原型</button>
         <button class="prototypeButton" type="button" @click="getDocument()" style="margin-left: 250px;">项目文档</button>
@@ -215,7 +215,7 @@ export default {
             const that = this
             this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
                 email: sessionStorage.getItem('email'),
-                URL: sessionStorage.getItem('group')+'/'+sessionStorage.getItem('project')
+                URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
             })).then(res => {
                 console.log(res)
                 if(res.data.result === 0){
@@ -292,9 +292,7 @@ export default {
             if(that.insertData.docName.length!==0){
                 this.$axios.post('/project/createDocument/',this.$qs.stringify({
                     email: sessionStorage.getItem('email'),
-                    groupName: sessionStorage.getItem('group'),
-                    proName: sessionStorage.getItem('project'),
-                    docName:that.insertData.docName,
+                    URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+that.insertData.docName,
                     content:' '
                 })).then(res => {
                     console.log(res)
@@ -302,8 +300,7 @@ export default {
                         that.$message.success("创建成功")
                         this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
                             email: sessionStorage.getItem('email'),
-                            groupName: sessionStorage.getItem('group'),
-                            proName: sessionStorage.getItem('project')
+                            URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
                         })).then(res => {
                             console.log(res)
                             if(res.data.result === 0){
@@ -337,14 +334,14 @@ export default {
                 if(res.data.result === 0){
                     this.$store.commit('setComponentData', this.resetID(JSON.parse(res.data.canvasData)))
                     this.$store.commit('setCanvasStyle', JSON.parse(res.data.canvasStyle))
-                    that.$router.push('prototype')
+                    that.$router.push({name:'prototype'})
                 }
             })
         },
         handleEdit2(index, docName){
             const that = this
             sessionStorage.setItem("document", docName)
-            that.$router.push('document')
+            that.$router.push({name:'document'})
         },
         handleDelete1(index, protoName){
             const that = this
@@ -379,9 +376,7 @@ export default {
             const that = this
             this.$axios.post('/project/removeDocument/', this.$qs.stringify({
                 email: sessionStorage.getItem("email"),
-                groupName: sessionStorage.getItem('group'),
-                proName: sessionStorage.getItem('project'),
-                docName: docName
+                URL: sessionStorage.getItem('group') +'/项目文件夹/'+sessionStorage.getItem('project')+'/'+docName,
             })).then(res =>{
                 console.log(res)
                 if(res.data.result === 0){
@@ -391,8 +386,7 @@ export default {
                 }
                 this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
                     email: sessionStorage.getItem('email'),
-                    groupName: sessionStorage.getItem('group'),
-                    proName: sessionStorage.getItem('project')
+                    URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
                 })).then(res => {
                     console.log(res)
                     if(res.data.result === 0){
