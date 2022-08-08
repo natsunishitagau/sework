@@ -92,7 +92,7 @@
 
         <div class="left-navibar">
             <header>
-                <img :src="avatar" @click="back"/>
+                <img :src="avatar"/>
             </header>
             <div class="switch" @click="personal" v-if="loc3!=0">
                 <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M512 128 128 447.936V896h255.936V640H640v256h255.936V447.936z"></path></svg>
@@ -188,12 +188,7 @@ export default {
     },
     methods: {
         created(){
-            this.loc1=sessionStorage.getItem('loc1')
             sessionStorage.setItem('mode', '0')
-        },
-        back() {
-            sessionStorage.setItem('mode', '0')
-            this.$router.push({name: 'userCenter'});
         },
         personal() {
             this.loc1=0;
@@ -212,8 +207,6 @@ export default {
             this.$router.push({name: 'newGroup'});
         },
         enterGroup() {
-            this.loc1=0
-            this.loc2=5
             // this.mode='1';
             // sessionStorage.setItem("mode",'1');
             // this.$router.push({name: 'manageMember'});
@@ -243,6 +236,8 @@ export default {
         },
         chooseTeam(i) {
             this.mode='1';
+            this.loc1=0
+            this.loc2=5
             this.loc3=1
             sessionStorage.setItem("mode",'1');
             this.isLookGroup=false;
@@ -316,6 +311,12 @@ export default {
         this.form.email=sessionStorage.getItem("email");
         this.nickname=sessionStorage.getItem("nickname");
         this.pos=sessionStorage.getItem("pos");
+        if(sessionStorage.getItem('destination')=="message"){
+            sessionStorage.setItem('destination', "userinfo")
+            this.getMes()
+        }else if(sessionStorage.getItem('destination')=="userinfo"){
+            this.personal()
+        }
     },
     beforeCreate() {
         document.getElementsByTagName("html")[0].className="bg";

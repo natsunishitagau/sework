@@ -43,8 +43,8 @@ export default {
             avatarSrc: '',
             isLookInfo: false,
             imgSize: "height:45px;width:45px",
-            links: ["workSpace","workSpace/collectProject","workSpace/recentLook"],
-            items: ["工作台","收藏","历史"],
+            links: ["workSpace"],
+            items: ["消息"],
             DialogVisible: false,
             newAvatarSrc: '',
         }
@@ -84,12 +84,13 @@ export default {
             location.reload();
         },
         userClick() {
-            sessionStorage.setItem('loc1','0')
+            sessionStorage.setItem('destination',"userinfo")
             this.$router.push("workSpace/recentLook");
         },
         enter(i) {
-            if(i===1)
-                sessionStorage.setItem('loc1','1')
+            if(i==0){
+                sessionStorage.setItem('destination',"message")
+            }
             this.$router.push(this.links[i]);
         }
     },
@@ -171,7 +172,7 @@ svg
     background-color: white;
     padding: 45px 20px 15px 20px;
     top: 70px;
-    right: 178px;
+    right: 20px;
     margin-top: -6px;
     width: 260px;
     border-radius: 8px;

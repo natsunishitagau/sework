@@ -215,8 +215,7 @@ export default {
             const that = this
             this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
                 email: sessionStorage.getItem('email'),
-                groupName: sessionStorage.getItem('group'),
-                proName: sessionStorage.getItem('project')
+                URL: sessionStorage.getItem('group')+'/'+sessionStorage.getItem('project')
             })).then(res => {
                 console.log(res)
                 if(res.data.result === 0){
