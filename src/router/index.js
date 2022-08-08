@@ -129,6 +129,11 @@ const routes = [
                 name: 'proInterface',
                 component:() =>import('../components/personal/ProInterface.vue')
             },
+            {
+                path: 'docCenter',
+                name: 'docCenter',
+                component:() =>import('../components/team/DocCenter.vue')
+            },
         ]
     }
 
