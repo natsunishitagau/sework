@@ -10,20 +10,44 @@
                 style="padding-left: 10%; padding-right: 10%">
 
                 <el-menu-item index="myProject" >项目名称: {{projectName}}</el-menu-item>
-<!--                <el-menu-item index="/workSpace" >工作台</el-menu-item>-->
+                <el-menu-item index="2">页面名称: {{prototypeName}}</el-menu-item>
                 <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
                 <el-menu-item index="avatar" style="float: right">
                     <el-avatar :src="oldAvatar"></el-avatar>
                 </el-menu-item>
                 <el-menu-item @click="goBack">返回</el-menu-item>
-                <el-menu-item >项目原型</el-menu-item>
-                <el-menu-item >项目文档</el-menu-item>
-                <el-menu-item >UML图</el-menu-item>
+                <el-menu-item index="Document" @click="gotoDoc">项目文档</el-menu-item>
+                <el-menu-item index="UML">UML图</el-menu-item>
                 <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
             </el-menu>
         </el-header>
-        <Toolbar />
-
+        <Toolbar style="position: absolute;z-index: 1"/>
+        <div class="floatWindow" style="position: absolute; z-index: 5;top: 120px">
+            <template v-if="isWindowShow">
+                <el-table
+                    height="400"
+                    :data="protoNames"
+                    style="width: 200px">
+                    <el-table-column
+                        label="页面"
+                        width="180">
+                        <template slot-scope="scope">
+                            <span class="tableRow" @click="choosePro(scope.row)">{{scope.row}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="">
+                        <template slot-scope="scope">
+                            <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="sign" @click="closeWindow()"><</div>
+            </template>
+            <div class="sign2" v-else @click="showWindow()">></div>
+        </div>
         <main>
 
             <!-- 左侧组件列表 -->
@@ -84,7 +108,10 @@ export default {
             activeName: 'attr',
             reSelectAnimateIndex: undefined,
             oldAvatar: window.sessionStorage.getItem('src'),
-            projectName: 'a',
+            projectName: ' ',
+            prototypeName:' ',
+            protoNames:[],
+            isWindowShow:false
         }
     },
     computed: mapState([
@@ -95,12 +122,53 @@ export default {
         'editor',
     ]),
     created() {
+        const that = this
         this.projectName = sessionStorage.getItem('project')
-        this.restore()
+        this.prototypeName = sessionStorage.getItem('protoName')
+        this.$axios.post('/project/checkPrototypes/',this.$qs.stringify({
+            email: sessionStorage.getItem('email'),
+            groupName: sessionStorage.getItem('group'),
+            proName: sessionStorage.getItem('project')
+        })).then(res => {
+            console.log(res)
+            if(res.data.result === 0){
+                that.protoNames = res.data.protoNames
+            }
+        })
         // 全局监听按键事件
         listenGlobalKeyDown()
     },
     methods: {
+        showWindow(){
+            this.isWindowShow=true
+        },
+        closeWindow(){
+            this.isWindowShow=false
+        },
+        handleDelete(){
+
+        },
+        gotoDoc(){
+            this.$router.push({name:'document'})
+        },
+        choosePro(item){
+            const that = this
+            that.prototypeName=item
+            sessionStorage.setItem('protoName',item)
+            this.$axios.post('project/checkPrototype/', this.$qs.stringify({
+                email: sessionStorage.getItem('email'),
+                groupName: sessionStorage.getItem('group'),
+                proName: sessionStorage.getItem('project'),
+                protoName: item
+            })).then(res => {
+                console.log(res)
+                if(res.data.result === 0){
+                    this.$store.commit('setComponentData', this.resetID(JSON.parse(res.data.canvasData)))
+                    this.$store.commit('setCanvasStyle', JSON.parse(res.data.canvasStyle))
+
+                }
+            })
+        },
         gotoCenter(){
             this.$router.push({name:'userInfo'})
         },
@@ -245,5 +313,30 @@ export default {
     .global-attr {
         padding: 10px;
     }
+}
+.tableRow:hover{
+    color:deepskyblue;
+    cursor: pointer;
+}
+.sign{
+    position: absolute;
+    top: 0px;
+    left: 200px;
+    width: 12px;
+    height: 20px;
+    background: gray;
+}
+.sign:hover{
+    cursor: pointer;
+}
+.sign2{
+    position: absolute;
+    top: 0px;
+    width: 12px;
+    height: 20px;
+    background: gray;
+}
+.sign2:hover{
+    cursor: pointer;
 }
 </style>

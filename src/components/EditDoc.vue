@@ -1,6 +1,30 @@
 <template>
   <div>
+      <el-header style="width: 100vw">
+          <el-menu
+              :default-active="activeIndex"
+              class="el-menu-demo"
+              mode="horizontal"
+              @select="handleSelect"
+              background-color="#FFF"
+              style="padding-left: 10%; padding-right: 10%">
 
+              <el-menu-item index="myProject" >文档名称: {{form.proName}}</el-menu-item>
+              <el-submenu index="2">
+                  <template slot="title">页面名称: {{form.docName}}</template>
+                  <el-menu-item index="2-1" :key="item" v-for="item in docNames" @click="chooseDoc(item)">{{item}}</el-menu-item>
+              </el-submenu>
+              <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
+              <el-menu-item index="avatar" style="float: right;">
+                  <el-avatar :src="oldAvatar"></el-avatar>
+              </el-menu-item>
+              <el-menu-item @click="goBack">返回</el-menu-item>
+              <el-menu-item @click="gotoProto">项目原型</el-menu-item>
+<!--              <el-menu-item >项目文档</el-menu-item>-->
+              <el-menu-item >UML图</el-menu-item>
+              <el-menu-item @click="logout" style="float: right;margin-left: 300px">退出登录</el-menu-item>
+          </el-menu>
+      </el-header>
     <header>
       <span>文档编辑</span>
       <div>
@@ -46,12 +70,14 @@ export default {
   components: { Editor, Toolbar },
   data() {
     return {
+        activeIndex: 'myProject',
+        oldAvatar: window.sessionStorage.getItem('src'),
       form: {
         email: "",
         groupName: "",
         proName: "",
         docName: "",
-        content: ""
+        content: "",
       },
       editor: null,
       html: '',
@@ -65,10 +91,42 @@ export default {
 
         // 所有的菜单配置，都要在 MENU_CONF 属性下
         MENU_CONF: {}
-      }
+      },
+        docNames:[]
     }
   },
   methods: {
+      gotoProto(){
+          this.$router.push({name:'prototype'})
+      },
+      logout() {
+          this.$confirm('此操作将退出登录, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+          }).then(() => {
+              this.$message({
+                  type: 'success',
+                  message: '已退出登录!'
+              });
+              window.sessionStorage.clear();
+              this.$router.push({path: '/login'});
+          }).catch(() => {
+
+          });
+      },
+      handleSelect(key, keyPath) {
+          if (key === '/workSpace/manageMember' || key === '/home' || key === '/workSpace/groupProject'
+              || key === '/workSpace') {
+              this.$router.push({ path: key })
+          }
+      },
+      goBack() {
+          this.$router.push({ path: '/proInterface' })
+      },
+      gotoCenter(){
+          this.$router.push({name:'userInfo'})
+      },
     onCreated(editor) {
       this.editor = Object.seal(editor) // 【注意】一定要用 Object.seal() 否则会报错
     },
@@ -91,7 +149,19 @@ export default {
     },
     back() {
       this.$router.push({name:'proInterface'})
-    }
+    },
+      chooseDoc(item){
+          const that = this
+          that.form.docName = item
+          this.$axios.post('/project/checkDocument/',this.$qs.stringify({
+              email: sessionStorage.getItem('email'),
+              URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+this.form.docName
+          }))
+              .then(res =>{
+                  this.form.content=res.data.content;
+                  this.html=res.data.content;
+              })
+      }
   },
   mounted() { //ctrl+s保存
     var that=this;
@@ -104,10 +174,20 @@ export default {
     };
   },
   created() {
+      const that = this
     this.form.email=sessionStorage.getItem("email");
     this.form.groupName=sessionStorage.getItem("group");
     this.form.proName=sessionStorage.getItem("project");
     this.form.docName=sessionStorage.getItem("document"); //名称对没
+      this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
+          email: sessionStorage.getItem('email'),
+          URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
+      })).then(res => {
+          console.log(res)
+          if(res.data.result === 0){
+              that.docNames = res.data.docNames
+          }
+      })
     this.$axios.post('/project/checkDocument/',this.$qs.stringify({
         email: sessionStorage.getItem('email'),
         URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
