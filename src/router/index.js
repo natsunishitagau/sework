@@ -134,11 +134,6 @@ const routes = [
                 component:() =>import('../components/team/RecycleBin.vue')
             },
             {
-                path: 'proInterface',
-                name: 'proInterface',
-                component:() =>import('../components/ProInterface.vue')
-            },
-            {
                 path: 'docCenter',
                 name: 'docCenter',
                 component:() =>import('../components/team/DocCenter.vue')

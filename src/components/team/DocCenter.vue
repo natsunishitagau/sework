@@ -13,7 +13,7 @@
               &nbsp;
               <span>{{ node.label.substr(0,node.label.length-1) }}</span>
             </span>
-            <span v-else @click="edit(data)">
+            <span v-else @click="edit(node)">
               <i class="el-icon-document"></i>
               <!--
                 <i class="el-icon-edit" v-else></i>
@@ -99,14 +99,14 @@
 
     </div>
     <div>
-      <div v-if="docName==''" class="slogan">欢迎来到文档中心</div>
-      <edit-doc v-else></edit-doc>
+      <div v-if="!docName" class="slogan">欢迎来到文档中心</div>
+      <edit-doc2 v-else v-bind:url="form.URL"></edit-doc2>
     </div>
   </div>
 </template>
 
 <script>
-import EditDoc from '../EditDoc.vue';
+import EditDoc2 from '../EditDoc2.vue';
 export default {
   name: 'docCenter',
   data() {
@@ -142,7 +142,7 @@ export default {
     }
   },
   components: {
-    EditDoc
+    EditDoc2
   },
   methods: {
     getInfo() {
@@ -214,9 +214,10 @@ export default {
       that.isInText=false;
       that.isInPro=false;
     },
-    edit(data) {
-      sessionStorage.setItem("doc",data.label);
-      this.docName=sessionStorage.getItem("doc");
+    edit(node) {
+      sessionStorage.setItem("document",node.data.label);
+      this.docName=sessionStorage.getItem("document");
+      this.preOp(node);
     },
     preOp(node) {
       this.open=true;
@@ -247,6 +248,7 @@ export default {
         this.form.newURL=i.data.label+parUrl;
 
       this.tarNode=node;
+
     },
     newFile() {
       this.isNewFile=true;
@@ -356,7 +358,7 @@ export default {
   created() {
     this.form.email=sessionStorage.getItem("email");
     this.form.groupName=sessionStorage.getItem("group");
-    this.docName=sessionStorage.getItem("doc");
+    this.docName="";
     this.getInfo();
   },
   mounted() {
@@ -400,7 +402,7 @@ export default {
     border-radius: 8px;
     padding: 8px 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    left: 175px;
+    left: 144px;
     width: 120px;
   }
   .operations div

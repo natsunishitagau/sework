@@ -10,11 +10,6 @@
           <span>保存文档</span>
         </span>
 
-        <span class="mess" @click="back">
-          <i class="el-icon-refresh-left"></i>
-          <span>返回</span>
-        </span>
-
       </div>
     </header>
 
@@ -44,14 +39,16 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 export default {
   name: 'editDoc',
   components: { Editor, Toolbar },
+  props: {
+    url: String
+  },
   data() {
     return {
       form: {
         email: "",
         groupName: "",
-        proName: "",
-        docName: "",
-        content: ""
+        content: "",
+        URL: ""
       },
       editor: null,
       html: '',
@@ -71,12 +68,8 @@ export default {
   },
   methods: {
     getInfo() {
-      this.form.proName=sessionStorage.getItem("project");
-      this.form.docName=sessionStorage.getItem("document");
-      this.$axios.post('/project/checkDocument/',this.$qs.stringify({
-        email: sessionStorage.getItem('email'),
-        URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
-      }))
+      this.form.URL=this.url;
+      this.$axios.post('/project/checkDocument/',this.$qs.stringify(this.form))
       .then(res =>{
         this.form.content=res.data.content;
         this.html=res.data.content;
@@ -97,21 +90,21 @@ export default {
       console.log(this.form)
       this.$axios.post('/project/saveDocument/',this.$qs.stringify({
           email: that.form.email,
-          URL: that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName,
+          URL: that.url,
           content: that.form.content
       })).then(res =>{
-        that.$message.success("保存成功")
+        that.$message.success("保存成功");
       })
     },
     back() {
       this.$router.push({name:'proInterface'})
     },
     initWebSocket() {
-        this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.form.groupName+"_项目文件夹_"+this.form.proName+'_'+this.form.docName+"/");
-        this.websock.onmessage=this.websocketOnMessage;
-        this.websock.onopen =this.websocketOnOpen;
-        this.websock.onerror=this.websocketOnError;
-        this.websock.onclose=this.websocketClose;
+      this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.url.replace('/','_')+'/');
+      this.websock.onmessage=this.websocketOnMessage;
+      this.websock.onopen =this.websocketOnOpen;
+      this.websock.onerror=this.websocketOnError;
+      this.websock.onclose=this.websocketClose;
     },
     sendWebSocketMessage(msg){
       this.websock.send(JSON.stringify(msg))
@@ -122,7 +115,6 @@ export default {
     },
     websocketOnOpen(e){
       console.log(e);
-
     },
     websocketOnError(e){
       console.log(e);
@@ -162,13 +154,12 @@ export default {
       if(this.websock.readyState===1&&(nowTime-this.editTime>=1200))
       {
         this.editTime=nowTime;
-        this.sendWebSocketMessage({
-          email: this.form.email,
-          URL: this.form.groupName+'/项目文件夹/'+this.form.proName+'/'+this.form.docName,
-          content: this.form.content
-        });
+        this.sendWebSocketMessage(this.form);
       }
     },
+    url() {
+      this.getInfo();
+    }
   },
 }
 </script>
