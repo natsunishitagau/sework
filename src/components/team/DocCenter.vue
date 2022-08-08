@@ -1,107 +1,112 @@
 <template>
-  <div class="fileTree">
+  <div class="desk">
+    <div class="fileTree">
 
-    <el-tree :data="data" :props="defaultProps" @node-expand="openDir" @node-collapse="closeDir"
-    :expand-on-click-node="false">
+      <el-tree :data="data" :props="defaultProps" @node-expand="openDir" @node-collapse="closeDir"
+      :expand-on-click-node="false">
 
-      <span class="custom-tree-node" slot-scope="{ node, data }" @click="nodeClick(node,data)">
-        <span @click="handleClick()" class="fileInfo">
-          <span v-if="node.label.charAt(node.label.length-1)=='/'">
-            <i class="el-icon-folder" v-if="!data.unfold"></i>
-            <i class="el-icon-folder-opened" v-else></i>
-            &nbsp;
-            <span>{{ node.label.substr(0,node.label.length-1) }}</span>
+        <span class="custom-tree-node" slot-scope="{ node, data }" @click="nodeClick(node,data)">
+          <span @click="handleClick()" class="fileInfo">
+            <span v-if="node.label.charAt(node.label.length-1)=='/'">
+              <i class="el-icon-folder" v-if="!data.unfold"></i>
+              <i class="el-icon-folder-opened" v-else></i>
+              &nbsp;
+              <span>{{ node.label.substr(0,node.label.length-1) }}</span>
+            </span>
+            <span v-else @click="edit(data)">
+              <i class="el-icon-document"></i>
+              <!--
+                <i class="el-icon-edit" v-else></i>
+              -->
+              &nbsp;
+              <span>{{ node.label }}</span>
+            </span>
+            &nbsp;&nbsp;
           </span>
-          <span v-else @click="edit(data)">
-            <i class="el-icon-document"></i>
-            <!--
-              <i class="el-icon-edit" v-else></i>
-            -->
-            &nbsp;
-            <span>{{ node.label }}</span>
+          <span v-show="showNum==data.$treeNodeId" @mouseenter="isLookOp=true" @mouseleave="isLookOp=false">
+            <i class="el-icon-more-outline" @click="preOp(node)" v-if="!isInPro||isInText||isText"></i>
+            <div v-show="open" @mouseenter="isOperate=true" @mouseleave="isOperate=false" class="operations">
+              
+              <div @click="newFile" v-if="node.label.charAt(node.label.length-1)=='/'">
+                新建文档
+              </div>
+              <div @click="newDir" v-if="!isInPro&&node.label.charAt(node.label.length-1)=='/'">
+                新建文件夹
+              </div>
+              <div @click="changeName(data)" v-if="isText||(!isInRoot&&!isInPro)">
+                重命名
+              </div>
+              <div @click="remove" v-if="isText||(!isInRoot&&!isInPro)">
+                删除
+              </div>
+
+            </div>
+
           </span>
-           &nbsp;&nbsp;
-        </span>
-        <span v-show="showNum==data.$treeNodeId" @mouseenter="isLookOp=true" @mouseleave="isLookOp=false">
-          <i class="el-icon-more-outline" @click="preOp(node)"></i>
-          <div v-show="open" @mouseenter="isOperate=true" @mouseleave="isOperate=false" class="operations">
-            
-            <div @click="newFile" v-if="!isInPro&&node.label.charAt(node.label.length-1)=='/'">
-              新建文件
-            </div>
-            <div @click="newDir" v-if="!isInPro&&node.label.charAt(node.label.length-1)=='/'">
-              新建文件夹
-            </div>
-            <div @click="changeName(data)">
-              重命名
-            </div>
-            <div @click="remove">
-              删除
-            </div>
-
-          </div>
 
         </span>
+      </el-tree>
 
-      </span>
-    </el-tree>
+      <el-dialog :visible.sync="isNewFile" title="新建文件" width="400px">
+        <el-form :model="form">
+          <el-form-item label="文件名称">
+            <el-input v-model="newFileName" autocomplete="off" />
+          </el-form-item>
+        </el-form>
 
-    <el-dialog :visible.sync="isNewFile" title="新建文件" width="400px">
-      <el-form :model="form">
-        <el-form-item label="文件名称">
-          <el-input v-model="newFileName" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="isNewDir = false">取消</el-button>
-          <el-button type="primary" @click="appendFile()"
-          >确认</el-button>
-        </span>
-      </template>
-    </el-dialog>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="isNewFile = false">取消</el-button>
+            <el-button type="primary" @click="appendFile()"
+            >确认</el-button>
+          </span>
+        </template>
+      </el-dialog>
 
 
-    <el-dialog :visible.sync="isNewDir" title="新建文件夹" width="400px">
-      <el-form :model="form">
-        <el-form-item label="文件夹名称">
-          <el-input v-model="newFileName" autocomplete="off" />
-        </el-form-item>
-      </el-form>
+      <el-dialog :visible.sync="isNewDir" title="新建文件夹" width="400px">
+        <el-form :model="form">
+          <el-form-item label="文件夹名称">
+            <el-input v-model="newFileName" autocomplete="off" />
+          </el-form-item>
+        </el-form>
 
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="isNewDir = false">取消</el-button>
-          <el-button type="primary" @click="appendDir()"
-          >确认</el-button>
-        </span>
-      </template>
-    </el-dialog>
-
-
-    <el-dialog :visible.sync="isRename" title="重命名" width="400px">
-      <el-form :model="form">
-        <el-form-item label="新名称">
-          <el-input v-model="newFileName" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="isNewDir = false">取消</el-button>
-          <el-button type="primary" @click="rename()"
-          >确认</el-button>
-        </span>
-      </template>
-    </el-dialog>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="isNewDir = false">取消</el-button>
+            <el-button type="primary" @click="appendDir()"
+            >确认</el-button>
+          </span>
+        </template>
+      </el-dialog>
 
 
+      <el-dialog :visible.sync="isRename" title="重命名" width="400px">
+        <el-form :model="form">
+          <el-form-item label="新名称">
+            <el-input v-model="newFileName" autocomplete="off" />
+          </el-form-item>
+        </el-form>
+
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="isRename = false">取消</el-button>
+            <el-button type="primary" @click="rename()"
+            >确认</el-button>
+          </span>
+        </template>
+      </el-dialog>
+
+    </div>
+    <div>
+      <div v-if="docName==''" class="slogan">欢迎来到文档中心</div>
+      <edit-doc v-else></edit-doc>
+    </div>
   </div>
-
 </template>
 
 <script>
+import EditDoc from '../EditDoc.vue';
 export default {
   name: 'docCenter',
   data() {
@@ -111,56 +116,33 @@ export default {
         groupName: "myteam",
         URL: "",
         oldURL: "",
-        newURL: ""
+        newURL: "",
+        content: ""
       },
+      docName: "",
       showNum: -1,
       isLookOp: false,
       isOperate: false,
       open: false,
+      isInRoot: false,
       isInPro: false,
+      isInText: false,
+      isText: false,
       newFileName: "",
       isNewFile:false,
       isNewDir: false,
       symbol: "",
       isRename: false,
-      data: [
-        {
-            label: '部门介绍/' 
-        },
-        {
-            label: '其他文件夹/' 
-        },
-        {
-            label: '数据/' 
-        },
-        {
-            label: '项目文档区/',
-            children:
-            [
-                {
-                    label: '项目1/',
-                    children:
-                    [{
-                        label: '需求建模文档.md'
-                    }]  
-                },
-                {
-                    label: '项目2/',
-                },
-            ]
-          },
-          {
-              label: '支持服务中心/' 
-          },
-          {
-              label: '团队介绍.doc' 
-          },
-      ],
+      data: [],
+      tarNode: null,
       defaultProps: {
         children: 'children',
         label: 'label'
       }
     }
+  },
+  components: {
+    EditDoc
   },
   methods: {
     getInfo() {
@@ -169,6 +151,11 @@ export default {
           .then(res =>{
               console.log(res);
               that.data=res.data.fileTree;
+              that.data=[ {
+                  label: that.form.groupName+'/',
+                  children: that.data
+                }
+              ]
           })
     },
     openDir(data,node) {
@@ -177,12 +164,27 @@ export default {
       else data.unfold=0;
       this.showNum=data.$treeNodeId;
       var i=node;
+      if(i.data.label===this.form.groupName+'/')
+        this.isInRoot=true;
       var that=this;
-      while(i.parent.data.label)
+      var use=0;
+      while(i.data.label)
+      {
+        if(i.data.label==='项目文件夹/')
+        {
+          that.isInPro=true;
+          if(use==1) that.isInText=true;
+          else that.isInText=false;
+          if(use==2) that.isText=true;
+          else that.isText=false;
+          return ;
+        }
         i=i.parent;
-      if(i.data.label==='项目文档区/')
-        that.isInPro=true;
-      else that.isInPro=false;
+        use++;
+      }
+      
+      that.isInText=false;
+      that.isInPro=false;
     },
     closeDir(data) {
       data.unfold=0;
@@ -190,15 +192,31 @@ export default {
     nodeClick(node,data) {
       this.showNum=data.$treeNodeId;
       var i=node;
+      if(i.data.label===this.form.groupName+'/')
+        this.isInRoot=true;
+      else this.isInRoot=false;
       var that=this;
-      while(i.parent.data.label)
+      var use=0;
+      while(i.data.label)
+      {
+        if(i.data.label==='项目文件夹/')
+        {
+          that.isInPro=true;
+          if(use==1) that.isInText=true;
+          else that.isInText=false;
+          if(use==2) that.isText=true;
+          else that.isText=false;
+          return ;
+        }
         i=i.parent;
-      if(i.data.label==='项目文档区/')
-        that.isInPro=true;
-      else that.isInPro=false;
+        use++;
+      }
+      that.isInText=false;
+      that.isInPro=false;
     },
     edit(data) {
-      
+      sessionStorage.setItem("doc",data.label);
+      this.docName=sessionStorage.getItem("doc");
     },
     preOp(node) {
       this.open=true;
@@ -220,13 +238,15 @@ export default {
 
         i=i.parent;
       }
-      url=this.form.groupName+'/'+i.data.label+url;
+      url=i.data.label+url;
       this.form.URL=url;
       this.form.oldURL=url;
       if(time==1)
-        this.form.newURL=this.form.groupName+'/'+parUrl;
+        this.form.newURL=parUrl;
       else 
-        this.form.newURL=this.form.groupName+'/'+i.data.label+parUrl;
+        this.form.newURL=i.data.label+parUrl;
+
+      this.tarNode=node;
     },
     newFile() {
       this.isNewFile=true;
@@ -240,8 +260,13 @@ export default {
               console.log(res);
               if(res.data.result==0)
               {
-                that.$message.success("修改成功!");
-                this.getInfo();
+                //this.getInfo();
+                const newChild = { label: that.newFileName, children: [] };
+                if (!that.tarNode.data.children) {
+                  that.$set(that.tarNode.data, 'children', []);
+                }
+                that.tarNode.data.children.push(newChild);
+
                 this.newFileName="";
                 this.isNewFile=false;
               }
@@ -260,8 +285,13 @@ export default {
               console.log(res);
               if(res.data.result==0)
               {
-                that.$message.success("修改成功!");
-                this.getInfo();
+                //this.getInfo();
+                const newChild = { label: that.newFileName+'/', children: [] };
+                if (!that.tarNode.data.children) {
+                  that.$set(that.tarNode.data, 'children', []);
+                }
+                that.tarNode.data.children.unshift(newChild);
+
                 this.newFileName="";
                 this.isNewDir=false;
               }
@@ -276,6 +306,7 @@ export default {
       that.isRename=true;
     },
     rename() {
+      this.form.oldURL=this.form.oldURL+this.symbol;
       this.form.newURL=this.form.newURL+this.newFileName+this.symbol;
       var that=this;
       this.$axios.post('/project/changeDocumentInfo/',this.$qs.stringify(this.form))
@@ -284,7 +315,9 @@ export default {
               if(res.data.result==0)
               {
                 that.$message.success("修改成功!");
-                that.getInfo();
+                //that.getInfo();
+                that.tarNode.data.label=that.newFileName;
+
                 that.isRename=false;
               }
               else that.$message.error(res.data.message);
@@ -296,7 +329,15 @@ export default {
           .then(res =>{
               console.log(res);
               that.$message.success("删除成功!");
-              that.getInfo();
+              //that.getInfo();
+              const parent=that.tarNode.parent;
+              for(var i in parent.data.children)
+              {
+                if(parent.data.children[i].label==that.tarNode.data.label)
+                  break;
+              }
+              const children = parent.data.children || parent.data;
+              children.splice(i, 1);
           })
     },
     handleClick() {
@@ -315,6 +356,7 @@ export default {
   created() {
     this.form.email=sessionStorage.getItem("email");
     this.form.groupName=sessionStorage.getItem("group");
+    this.docName=sessionStorage.getItem("doc");
     this.getInfo();
   },
   mounted() {
@@ -328,9 +370,16 @@ export default {
 
 
 <style scoped>
+  .desk
+  {
+    display: flex;
+  }
   .fileTree
   {
-    width: 250px;
+    width: 220px;
+    min-width: 220px;
+    height: 100%;
+    margin-right: 20px;
   }
   .custom-tree-node 
   {
@@ -363,5 +412,11 @@ export default {
   .operations div:hover
   {
     background-color: rgb(240, 240, 240);
+  }
+  .slogan
+  {
+    flex: 1;
+    text-align: center;
+    font-size: 50px;
   }
 </style>

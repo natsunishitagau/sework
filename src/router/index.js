@@ -5,12 +5,22 @@ import EmptyPage from '../components/EmptyPage.vue'
 Vue.use(Router)
 
 const originalPush = Router.prototype.push
- 
+
 Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err=>err)
 }
 
 const routes = [
+    {
+        path: '/newpath',
+        name: 'newpath',
+        component: () =>import('../components/Documents.vue')
+    },
+    {
+        path: '/prototype',
+        name: 'prototype',
+        component:() =>import('@/components/Prototype.vue')
+    },
     {
         path: '/emptyPage',
         name: 'emptyPage',
@@ -24,11 +34,6 @@ const routes = [
         path: '/home',
         name: 'home',
         component:() =>import('../components/HomePage.vue')
-    },
-    {
-        path: '/workSpace/prototype',
-        name: 'prototype',
-        component: () => import('@/views/Prototype'),
     },
     {
         path: '/workSpace/document',
@@ -56,30 +61,14 @@ const routes = [
         component: () => import('../components/user/Retrieve.vue')
     },
     {
-        path: '/userCenter',
-        name: 'userCenter',
-        component:() =>import('../components/user/UserCenter.vue'),
-        redirect: {name:'userInfo'},
+        path: '/proInterface',
+        name: 'proInterface',
+        component:() =>import('../components/ProInterface.vue'),
         children: [
-          {
-            path: 'userInfo',
-            name: 'userInfo',
-            component:() =>import('../components/user/userCenter/UserInfo.vue')
-          },
-          {
-            path: 'changePwd',
-            name: 'changePwd',
-            component:() =>import('../components/user/userCenter/ChangePwd.vue')
-          },
             {
-                path: 'messageCheck',
-                name: 'messageCheck',
-                component:() =>import('../components/user/userCenter/MessageCheck.vue')
-            },
-            {
-                path: 'messageContent',
-                name: 'messageContent',
-                component:() =>import('../components/user/userCenter/MessageContent.vue')
+                path: 'prototype',
+                name: 'prototype',
+                component:() =>import('@/components/Prototype.vue')
             }
         ]
     },
@@ -89,6 +78,26 @@ const routes = [
         component:() =>import('../components/WorkSpace.vue'),
         redirect: {name:'recentLook'},
         children: [
+            {
+                path: 'userInfo',
+                name: 'userInfo',
+                component:() =>import('../components/personal/UserInfo.vue')
+            },
+            {
+                path: 'changePwd',
+                name: 'changePwd',
+                component:() =>import('../components/personal/ChangePwd.vue')
+            },
+            {
+                path: 'messageCheck',
+                name: 'messageCheck',
+                component:() =>import('../components/personal/MessageCheck.vue')
+            },
+            {
+                path: 'messageContent',
+                name: 'messageContent',
+                component:() =>import('../components/personal/MessageContent.vue')
+            },
             {
                 path: 'recentLook',
                 name: 'recentLook',
@@ -127,7 +136,7 @@ const routes = [
             {
                 path: 'proInterface',
                 name: 'proInterface',
-                component:() =>import('../components/personal/ProInterface.vue')
+                component:() =>import('../components/ProInterface.vue')
             },
             {
                 path: 'docCenter',

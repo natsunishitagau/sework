@@ -16,12 +16,16 @@
                     <el-avatar :src="oldAvatar"></el-avatar>
                 </el-menu-item>
                 <el-menu-item @click="goBack">返回</el-menu-item>
+                <el-menu-item >项目原型</el-menu-item>
+                <el-menu-item >项目文档</el-menu-item>
+                <el-menu-item >UML图</el-menu-item>
                 <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
             </el-menu>
         </el-header>
         <Toolbar />
 
         <main>
+
             <!-- 左侧组件列表 -->
             <section class="left">
                 <ComponentList />
@@ -59,7 +63,7 @@
 </template>
 
 <script>
-import Editor from '@/components/Editor/index'
+import Editor from '@/components/Editor'
 import ComponentList from '@/components/ComponentList' // 左侧列表组件
 import AnimationList from '@/components/AnimationList' // 右侧动画列表
 import EventList from '@/components/EventList' // 右侧事件列表
@@ -126,7 +130,7 @@ export default {
         },
 
         goBack() {
-            this.$router.push({ path: '/workSpace/proInterface' })
+            this.$router.push({ path: '/proInterface' })
         },
 
         resetID(data) {
