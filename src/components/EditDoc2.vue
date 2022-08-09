@@ -38,7 +38,7 @@
         style="height: 550px; overflow-y: hidden;"
         :defaultConfig="editorConfig"
         v-model="html"
-        @onChange="onChange"
+
         @onCreated="onCreated"
       />
     </div>
@@ -68,7 +68,6 @@ export default {
         groupName: "",
         content: "",
         URL: "",
-        location: []
       },
       editor: null,
       html: '',
@@ -83,8 +82,8 @@ export default {
         // 所有的菜单配置，都要在 MENU_CONF 属性下
         MENU_CONF: {}
       },
-      editTime: null,
       printContent: "",
+      timer: ''
     }
   },
   methods: {
@@ -100,17 +99,13 @@ export default {
     onCreated(editor) {
       this.editor = Object.seal(editor) // 【注意】一定要用 Object.seal() 否则会报错
     },
-    onChange(editor) {
-      console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
-    },
+
     saveText() {
       const that=this;
       const editor = this.editor;
-      console.log(editor.getHtml());
       this.form.content=editor.getHtml();
       this.printContent=this.form.content;
       // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
-      console.log(this.form)
       this.$axios.post('/project/saveDocument/',this.$qs.stringify({
           email: that.form.email,
           URL: that.url,
@@ -122,6 +117,7 @@ export default {
     back() {
       this.$router.push({name:'proInterface'})
     },
+    /*
     initWebSocket() {
       this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.url.replace(new RegExp('/',"g"),'_')+'/');
       this.websock.onmessage=this.websocketOnMessage;
@@ -141,6 +137,7 @@ export default {
     },
     websocketOnOpen(e){
       console.log(e);
+      this.timer=setInterval(this.send, 2000);
     },
     websocketOnError(e){
       console.log(e);
@@ -148,6 +145,7 @@ export default {
     websocketClose(e){
       console.log(e);
     },
+    */
 
     exportText(cmd) {
       switch(cmd) {
@@ -201,36 +199,20 @@ export default {
           that.saveText()//;saveProject
         }
     };
-    this.initWebSocket();
+    //this.initWebSocket();
   },
   created() {
     this.form.email=sessionStorage.getItem("email");
     this.form.groupName=sessionStorage.getItem("group");
-    this.editTime=new Date();
     this.getInfo();
   },
   beforeDestroy() {
     const editor = this.editor
     if (editor == null) return
       editor.destroy() // 组件销毁时，及时销毁 editor
+      clearInterval(this.timer)
   },
   watch: {
-    html(newValue, oldValue)
-    {
-      this.form.content=newValue;
-      var nowTime=new Date();
-      
-      if(this.websock.readyState===1&&(nowTime-this.editTime>=1200))
-      {
-        this.editTime=nowTime;
-        const domSelection = document.getSelection()
-        const domRange = domSelection.getRangeAt(0)
-        const selectionRect = domRange.getBoundingClientRect()
-        
-        this.form.location= [ selectionRect.x, selectionRect.y ]
-        this.sendWebSocketMessage( this.form );
-      }
-    },
     url() {
       this.getInfo();
     }

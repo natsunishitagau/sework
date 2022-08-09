@@ -166,15 +166,14 @@ export default {
           this.editor = Object.seal(editor) // 【注意】一定要用 Object.seal() 否则会报错
       },
       onChange(editor) {
-          console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
+          //console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
       },
       saveText() {
           const that=this;
           const editor = this.editor;
-          console.log(editor.getHtml());
           this.form.content=editor.getHtml();
+          this.printContent=this.form.content;
           // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
-          console.log(this.form)
           this.$axios.post('/project/saveDocument/',this.$qs.stringify({
               email: that.form.email,
               URL: that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName,
@@ -198,6 +197,7 @@ export default {
                   this.html=res.data.content;
               })
       },
+      /*
       initWebSocket(){
           this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.form.groupName+"_项目文件夹_"+this.form.proName+'_'+this.form.docName+"/");
           this.websock.onmessage=this.websocketOnMessage;
@@ -222,6 +222,7 @@ export default {
       websocketClose(e){
           console.log(e);
       },
+      */
       exportText(cmd) {
         switch(cmd) {
           case "a": 
@@ -273,7 +274,7 @@ export default {
           that.saveText()//;saveProject
         }
     };
-    this.initWebSocket();
+    //this.initWebSocket();
   },
   created() {
       const that = this
@@ -298,6 +299,7 @@ export default {
     if (editor == null)
         return editor.destroy() // 组件销毁时，及时销毁 editor
   },
+  /*
   watch: {
     html(newValue, oldValue)
     {
@@ -315,6 +317,7 @@ export default {
       }
     },
   },
+  */
 }
 </script>
 

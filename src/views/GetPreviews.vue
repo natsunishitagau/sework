@@ -21,7 +21,7 @@
       <el-aside class="aside">
         <el-table
           :data="prototypeNames" stripe style="width: 160px;">
-          <el-table-column prop="name" label="名称" align="center">
+          <el-table-column prop="name" label="名称" :align="center">
             <template #default="scope">
             <el-button icon="el-icon-document">
                 <a @click="prototypePreview(scope.row)">{{scope.row}}</a>

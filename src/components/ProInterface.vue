@@ -102,6 +102,14 @@
                 <el-form-item label="文档名称：">
                     <el-input v-model="insertData.docName" />
                 </el-form-item>
+
+                <el-form-item label="文档模板：">
+                    <el-select v-model="model" placeholder="选择模板">
+                      <el-option label="区域一" value="model1"></el-option>
+                      <el-option label="区域二" value="model2"></el-option>
+                    </el-select>
+                </el-form-item>
+
             </el-form>
             <div style="text-align: center;">
                 <el-button type="danger" @click="dialog2Closed" circle style="width: 40px;height: 40px;-webkit-border-radius: 80px;float: left; margin-left: 100px;">取消</el-button>
@@ -173,7 +181,13 @@ export default {
             showDocument:false,
             showPrototype:false,
             dialog1Visible:false,
-            dialog2Visible:false
+            dialog2Visible:false,
+            model:"model0",
+            content: "",
+            contentTem1:
+            "",
+            contentTem2:
+            ""
         }
     },
     computed: mapState([
@@ -290,10 +304,22 @@ export default {
         createDocument(){
             const that = this
             if(that.insertData.docName.length!==0){
+              switch(that.model)
+              {
+                case "model1":
+                  that.content=that.contentTem1;
+                  break;
+                case "model2":
+                  that.content=that.contentTem2;
+                  break;
+                
+
+                default: that.content=''
+              }
                 this.$axios.post('/project/createDocument/',this.$qs.stringify({
                     email: sessionStorage.getItem('email'),
                     URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+that.insertData.docName,
-                    content:' '
+                    content:that.content
                 })).then(res => {
                     console.log(res)
                     if(res.data.result === 0){
