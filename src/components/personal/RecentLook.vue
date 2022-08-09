@@ -47,7 +47,7 @@ export default {
             const that = this
             sessionStorage.setItem('project',pro.proName)
             sessionStorage.setItem('group', pro.group)
-            that.$router.push({name:'proInterface'})
+            that.$router.push({name:'prototype'})
         }
     },
     created() {

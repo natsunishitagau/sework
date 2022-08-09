@@ -1,6 +1,12 @@
 <template>
     <div>
-        <header>成员管理</header>
+        <header>
+            <div style="float:left">成员管理</div>
+            <div class="release" v-if="pos==0" @click="releaseTeam">解散团队</div>
+            <div class="release" v-else @click="leaveTeam">退出团队</div>
+            <div class="clear"></div>
+        </header>
+
         <hr/>
 
         <div class="table">
@@ -66,6 +72,38 @@ export default {
         }
     },
     methods: {
+        releaseTeam(){
+            const that = this
+            this.$axios.post('/group/deleteGroup/',this.$qs.stringify({
+                email: sessionStorage.getItem('email'),
+                groupName: sessionStorage.getItem('group')
+            })).then(res =>{
+                console.log(res)
+                if(res.data.result==0){
+                    this.$message.success("解散成功")
+                    sessionStorage.setItem('destination',"userinfo")
+                    this.$router.push({name: 'emptyPage'});
+                }else{
+                    this.$message.error("请求错误")
+                }
+            })
+        },
+        leaveTeam(){
+            const that = this
+            this.$axios.post('/group/quitGroup/',this.$qs.stringify({
+                email: sessionStorage.getItem("email"),
+                groupName: sessionStorage.getItem("group")
+            })).then(res =>{
+                console.log(res)
+                if(res.data.result===0){
+                    this.$message.success("退出成功")
+                    sessionStorage.setItem('destination',"userinfo")
+                    this.$router.push({name: 'emptyPage'});
+                }else{
+                    this.$message.error("请求错误")
+                }
+            })
+        },
         getInfo() {
             var that=this;
             this.tableData=[];
@@ -136,10 +174,10 @@ export default {
         this.form.ownerEmail=this.form.email;
         // this.getInfo();
     },
-    beforeRouteUpdate (to, from, next) {
-        next()
-        this.getInfo()
-    },
+    // beforeRouteUpdate (to, from, next) {
+    //     next()
+    //     this.getInfo()
+    // },
 
 
     watch: {
@@ -204,5 +242,16 @@ header
 .op div:hover
 {
     background-color: rgb(240,240,240);
+}
+.clear{
+    clear: both;
+}
+.release{
+    float: right;
+
+}
+.release:hover{
+    cursor: pointer;
+    background: gray;
 }
 </style>

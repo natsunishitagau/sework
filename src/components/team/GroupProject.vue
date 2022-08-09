@@ -38,11 +38,12 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column fixed="right" width="180" label="操作">
+                <el-table-column fixed="right" width="200" label="操作">
                     <template #default="scope">
                         <div @mouseenter="op(scope.row.name)">
+                            <span class="op" @click="copy(scope.row.name)">复制</span>&nbsp;&nbsp;&nbsp;&nbsp;
                             <span class="op" @click="isRename=true">重命名</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span class="op" @click="del">删除  </span>
+                            <span class="op" @click="del">删除</span>
                         </div>
                     </template>
                 </el-table-column>
@@ -69,7 +70,7 @@
         <el-dialog v-if="isRename" :visible.sync="isRename" title="项目重命名" width="400px">
             <el-form :model="form">
                 <el-form-item label="项目名称">
-                    <el-input v-model="form.newProName" autocomplete="off" />
+                    <el-input v-model="form.newProName" autocomplete="off"/>
                 </el-form-item>
             </el-form>
 
@@ -104,6 +105,25 @@ export default {
         }
     },
     methods: {
+        copy(proName){
+            const that = this
+            // alert(proName)
+            this.$axios.post('/group/copyProject/',this.$qs.stringify({
+                email: sessionStorage.getItem('email'),
+                groupName: sessionStorage.getItem('group'),
+                proName: proName
+            })).then(res =>{
+                console.log(res)
+                if(res.data.result==0){
+                    this.$message.success('复制成功!')
+                    this.getInfo()
+                }else if(res.data.result==1){
+                    this.$message.error('请求方式错误')
+                }else{
+                    this.$message.error('项目名称已存在')
+                }
+            })
+        },
         getInfo() {
             var that=this;
             this.tableData=[];
@@ -125,7 +145,7 @@ export default {
         },
         lookInfo(item) {
             sessionStorage.setItem("project",item.name);
-            this.$router.push({name:'proInterface'});
+            this.$router.push({name:'prototype'});
         },
         preCreate() {
             this.isCreate=true;

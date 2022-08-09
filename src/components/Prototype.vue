@@ -11,6 +11,7 @@
 
                 <el-menu-item index="myProject" >项目名称: {{projectName}}</el-menu-item>
                 <el-menu-item index="2">页面名称: {{prototypeName}}</el-menu-item>
+                <el-menu-item index="3" @click="newProto">创建页面</el-menu-item>
                 <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
                 <el-menu-item index="avatar" style="float: right">
                     <el-avatar :src="oldAvatar"></el-avatar>
@@ -21,7 +22,7 @@
                 <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
             </el-menu>
         </el-header>
-        <Toolbar style="position: absolute;z-index: 1"/>
+        <Toolbar/>
         <div class="floatWindow" style="position: absolute; z-index: 5;top: 120px">
             <template v-if="isWindowShow">
                 <el-table
@@ -83,6 +84,23 @@
                 <CanvasAttr v-else></CanvasAttr>
             </section>
         </main>
+        <el-dialog class="dialog" title="创建原型" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 500px">
+            <el-form :model="insertData" label-width="120px">
+                <el-form-item label="原型名称：">
+                    <el-input v-model="insertData.protoName" />
+                </el-form-item>
+                <el-form-item label="画布高：">
+                    <el-input v-model="insertData.canvasHeight" />
+                </el-form-item>
+                <el-form-item label="画布宽：">
+                    <el-input v-model="insertData.canvasWidth"/>
+                </el-form-item>
+            </el-form>
+            <div style="text-align: center;">
+                <el-button type="danger" @click="dialogClosed" circle style="width: 40px;height: 40px;-webkit-border-radius: 80px;float: left; margin-left: 100px;">取消</el-button>
+                <el-button type="primary" @click="createPrototype()" style="width: 80px; height: 40px;margin:0 auto;">保存</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -104,6 +122,41 @@ export default {
     components: { Editor, ComponentList, AnimationList, EventList, Toolbar, RealTimeComponentList, CanvasAttr },
     data() {
         return {
+            defaultComponentData:[{
+                animations:[],
+                events:{},
+                groupStyle:{},
+                isLock:false,
+                component:"Picture",
+                label:"图片",
+                icon:"tupian",
+                propValue:{
+                    url:"img/title.ac55a42f.jpg",
+                    flip:{
+                        horizontal:false,
+                        vertical:false
+                    }
+                },
+                style:{
+                    rotate:0,
+                    opacity:1,
+                    width:300,
+                    height:200,
+                    borderRadius:"",
+                    top:64,
+                    left:171
+                },
+                id:18,
+            }],
+            defaultCanvasData:{
+                width: 1200,
+                height: 1200,
+                scale: 100,
+                color: '#000',
+                opacity: 1,
+                background: '#fff',
+                fontSize: 14,
+            },
             activeIndex: 'myProject',
             activeName: 'attr',
             reSelectAnimateIndex: undefined,
@@ -111,7 +164,13 @@ export default {
             projectName: ' ',
             prototypeName:' ',
             protoNames:[],
-            isWindowShow:false
+            isWindowShow:false,
+            dialogVisible:false,
+            insertData:{
+                protoName: '',
+                canvasHeight: 1200,
+                canvasWidth: 1200,
+            },
         }
     },
     computed: mapState([
@@ -124,29 +183,111 @@ export default {
     created() {
         const that = this
         this.projectName = sessionStorage.getItem('project')
-        this.prototypeName = sessionStorage.getItem('protoName')
         this.$axios.post('/project/checkPrototypes/',this.$qs.stringify({
             email: sessionStorage.getItem('email'),
             groupName: sessionStorage.getItem('group'),
             proName: sessionStorage.getItem('project')
         })).then(res => {
-            console.log(res)
             if(res.data.result === 0){
                 that.protoNames = res.data.protoNames
+                that.prototypeName = res.data.protoNames[0]
+                this.$axios.post('project/checkPrototype/', this.$qs.stringify({
+                    email: sessionStorage.getItem('email'),
+                    groupName: sessionStorage.getItem('group'),
+                    proName: sessionStorage.getItem('project'),
+                    protoName: that.prototypeName
+                })).then(res => {
+                    console.log(res)
+                    if(res.data.result === 0){
+                        this.$store.commit('setComponentData', this.resetID(JSON.parse(res.data.canvasData)))
+                        this.$store.commit('setCanvasStyle', JSON.parse(res.data.canvasStyle))
+                    }
+                })
             }
         })
         // 全局监听按键事件
         listenGlobalKeyDown()
     },
     methods: {
+        createPrototype(){
+            const that = this
+            mapState.componentData = that.defaultComponentData
+            mapState.canvasStyleData = that.defaultCanvasData
+            mapState.canvasStyleData.width=that.insertData.canvasWidth
+            mapState.canvasStyleData.height=that.insertData.canvasHeight
+            if(that.insertData.protoName.length!==0) {
+                this.$axios.post('/project/createPrototype/', this.$qs.stringify({
+                    email: sessionStorage.getItem('email'),
+                    groupName: sessionStorage.getItem('group'),
+                    proName: sessionStorage.getItem('project'),
+                    protoName: that.insertData.protoName,
+                    canvasData: JSON.stringify(mapState.componentData),
+                    canvasStyle: JSON.stringify(mapState.canvasStyleData),
+                    canvasHeight: that.insertData.canvasHeight,
+                    canvasWidth: that.insertData.canvasWidth
+                })).then(res => {
+                    console.log(res)
+                    if(res.data.result === 0){
+                        that.$message.success("创建成功")
+                        this.$axios.post('/project/checkPrototypes/',this.$qs.stringify({
+                            email: sessionStorage.getItem("email"),
+                            groupName: sessionStorage.getItem('group'),
+                            proName: sessionStorage.getItem('project')
+                        })).then(res => {
+                            console.log(res)
+                            if(res.data.result === 0){
+                                that.insertData.protoName=''
+                                that.protoNames = res.data.protoNames
+                            }
+                        })
+                        that.dialogVisible = false
+                    }else if(res.data.result === 1){
+                        that.$message.error("错误的请求")
+                    }else{
+                        that.$message.error("原型名称已存在")
+                    }
+                })
+            }
+        },
+        newProto(){
+            const that = this
+            that.dialogVisible=true
+        },
+        dialogClosed(){
+            const that = this
+            that.dialogVisible = false
+        },
         showWindow(){
             this.isWindowShow=true
         },
         closeWindow(){
             this.isWindowShow=false
         },
-        handleDelete(){
-
+        handleDelete(index,protoName){
+            const that = this
+            this.$axios.post('/project/removePrototype/', this.$qs.stringify({
+                email: sessionStorage.getItem('email'),
+                groupName: sessionStorage.getItem('group'),
+                proName: sessionStorage.getItem('project'),
+                protoName: protoName
+            })).then(res =>{
+                console.log(res)
+                if(res.data.result === 0){
+                    that.$message.success("删除项目成功")
+                }else{
+                    that.$message.error("请求错误")
+                }
+                this.$axios.post('/project/checkPrototypes/',this.$qs.stringify({
+                    email: sessionStorage.getItem("email"),
+                    groupName: sessionStorage.getItem('group'),
+                    proName: sessionStorage.getItem('project')
+                })).then(res =>{
+                    console.log(res)
+                    if(res.data.result === 0){
+                        that.protoNames = res.data.protoNames
+                    }
+                })
+            })
         },
         gotoDoc(){
             this.$router.push({name:'document'})
@@ -198,7 +339,7 @@ export default {
         },
 
         goBack() {
-            this.$router.push({ path: '/proInterface' })
+            this.$router.push({ path: '/workSpace' })
         },
 
         resetID(data) {
