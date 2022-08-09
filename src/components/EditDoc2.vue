@@ -11,14 +11,14 @@
         </span>
 
         <span class="export">
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" @command="exportText">
             <el-button type="text" size="medium">
               <i class="el-icon-printer"></i>&nbsp;导出为
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click="printPDF">word</el-dropdown-item>
-              <el-dropdown-item @click="printWORD">pdf</el-dropdown-item>
-              <el-dropdown-item @click="printMD">markdown</el-dropdown-item>
+              <el-dropdown-item command="a">word</el-dropdown-item>
+              <el-dropdown-item command="b">pdf</el-dropdown-item>
+              <el-dropdown-item command="c">markdown</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -94,6 +94,7 @@ export default {
       .then(res =>{
         this.form.content=res.data.content;
         this.html=res.data.content;
+        this.printContent=this.form.content;
       })
     },
     onCreated(editor) {
@@ -122,7 +123,7 @@ export default {
       this.$router.push({name:'proInterface'})
     },
     initWebSocket() {
-      this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.url.replace('/','_')+'/');
+      this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.url.replace(new RegExp('/',"g"),'_')+'/');
       this.websock.onmessage=this.websocketOnMessage;
       this.websock.onopen =this.websocketOnOpen;
       this.websock.onerror=this.websocketOnError;
@@ -148,10 +149,21 @@ export default {
       console.log(e);
     },
 
+    exportText(cmd) {
+      switch(cmd) {
+        case "a": 
+          this.printWORD();
+          break;
+        case "b":
+          this.printPDF();
+          break;
+        case "c": this.printMD();
+      }
+    },
     printPDF() {
       var Opdf=document.getElementById('print-pdf');
       Opdf.setAttribute('style','display:block');
-      htmlPdf.getPdf('导出pdf', document.querySelector('#print-pdf'));
+      htmlPdf.getPdf(sessionStorage.getItem("document"), document.querySelector('#print-pdf'));
       Opdf.setAttribute('style','display:none');
     },
     printWORD() {
@@ -162,7 +174,7 @@ export default {
           htmlDocx.asBlob(page, {
               orientation: "landscape"
           }),
-          this.docName+".doc"
+          sessionStorage.getItem("document")+".doc"
       )
     },
     printMD() {
@@ -173,7 +185,7 @@ export default {
         console.log(res.data);
         saveAs(
           new Blob([res.data.markdownContent]),
-          this.docName+".md"
+          sessionStorage.getItem("document")+".md"
         )
       })
     }

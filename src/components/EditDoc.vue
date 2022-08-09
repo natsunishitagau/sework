@@ -34,6 +34,19 @@
           <span>保存文档</span>
         </span>
 
+        <span class="export">
+          <el-dropdown trigger="click" @command="exportText">
+            <el-button type="text" size="medium">
+              <i class="el-icon-printer"></i>&nbsp;导出为
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="a">word</el-dropdown-item>
+              <el-dropdown-item command="b">pdf</el-dropdown-item>
+              <el-dropdown-item command="c">markdown</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </span>
+
         <span class="mess" @click="back">
           <i class="el-icon-refresh-left"></i>
           <span>返回</span>
@@ -59,11 +72,17 @@
       />
     </div>
 
+    <div v-html="printContent" style="display:none" id="print-pdf">
+    </div>
+
   </div>
 </template>
 
 <script>
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import htmlDocx from 'html-docx-js/dist/html-docx';
+import saveAs from 'file-saver';
+import htmlPdf from '../utils/pdf.js';
 
 export default {
   name: 'editDoc',
@@ -92,6 +111,9 @@ export default {
         // 所有的菜单配置，都要在 MENU_CONF 属性下
         MENU_CONF: {}
       },
+      editTime: null,
+      printContent: "",
+      docNames: []
     }
   },
   methods: {
@@ -129,6 +151,7 @@ export default {
       getInfo(){
           this.form.proName=sessionStorage.getItem("project");
           this.form.docName=sessionStorage.getItem("document");
+          this.printContent=this.form.content;
           this.$axios.post('/project/checkDocument/',this.$qs.stringify({
               email: sessionStorage.getItem('email'),
               URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
@@ -136,6 +159,7 @@ export default {
               .then(res =>{
                   this.form.content=res.data.content;
                   this.html=res.data.content;
+                  this.printContent=this.form.content;
               })
       },
       onCreated(editor) {
@@ -198,7 +222,47 @@ export default {
       websocketClose(e){
           console.log(e);
       },
-      editTime: null,
+      exportText(cmd) {
+        switch(cmd) {
+          case "a": 
+            this.printWORD();
+            break;
+          case "b":
+            this.printPDF();
+            break;
+          case "c": this.printMD();
+        }
+      },
+      printPDF() {
+        var Opdf=document.getElementById('print-pdf');
+        Opdf.setAttribute('style','display:block');
+        htmlPdf.getPdf(sessionStorage.getItem("document"), document.querySelector('#print-pdf'));
+        Opdf.setAttribute('style','display:none');
+      },
+      printWORD() {
+        let htmlStr = this.printContent;
+        let page = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${htmlStr}        
+            </body></html>`
+        saveAs(
+            htmlDocx.asBlob(page, {
+                orientation: "landscape"
+            }),
+            sessionStorage.getItem("document")+".doc"
+        )
+      },
+      printMD() {
+        var that=this;
+        this.$axios.post('/project/htmlToMarkdowm/',this.$qs.stringify({
+            htmlContent: that.printContent
+        })).then(res =>{
+          console.log(res.data);
+          saveAs(
+            new Blob([res.data.markdownContent]),
+            sessionStorage.getItem("document")+".md"
+          )
+        })
+      }
+      
     },
   mounted() { //ctrl+s保存
     var that=this;
@@ -226,14 +290,6 @@ export default {
               that.docNames = res.data.docNames
           }
       })
-    this.$axios.post('/project/checkDocument/',this.$qs.stringify({
-        email: sessionStorage.getItem('email'),
-        URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
-    }))
-    .then(res =>{
-      this.form.content=res.data.content;
-      this.html=res.data.content;
-    })
     this.editTime=new Date();
     this.getInfo();
   },
@@ -294,6 +350,19 @@ export default {
   .mess:hover
   {
     background-color: rgb(240, 240, 240);
+  }
+   .export
+  {
+    margin-left: 20px;
+    height: 28.4px;
+    line-height: 28.4px;
+  }
+  ::v-deep .el-button--text{
+    font-size: 15px;
+    color: black;
+  }
+  ::v-deep .el-button--medium{
+    padding: 0;
   }
 </style>
 <style src="@wangeditor/editor/dist/css/style.css"></style>
