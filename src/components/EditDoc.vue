@@ -9,11 +9,9 @@
               background-color="#FFF"
               style="padding-left: 10%; padding-right: 10%">
 
-              <el-menu-item index="myProject" >文档名称: {{form.proName}}</el-menu-item>
-              <el-submenu index="2">
-                  <template slot="title">页面名称: {{form.docName}}</template>
-                  <el-menu-item index="2-1" :key="item" v-for="item in docNames" @click="chooseDoc(item)">{{item}}</el-menu-item>
-              </el-submenu>
+              <el-menu-item index="myProject" >项目名称: {{form.proName}}</el-menu-item>
+              <el-menu-item index="2">文档名称: {{form.docName}}</el-menu-item>
+              <el-menu-item index="3" @click="newDoc">创建文档</el-menu-item>
               <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
               <el-menu-item index="avatar" style="float: right;">
                   <el-avatar :src="oldAvatar"></el-avatar>
@@ -26,17 +24,38 @@
           </el-menu>
       </el-header>
     <header>
+        <div class="floatWindow" style="position: absolute; z-index: 5;top: 120px">
+            <template v-if="isWindowShow">
+                <el-table
+                    height="400"
+                    :data="docNames"
+                    style="width: 200px">
+                    <el-table-column
+                        label="文档"
+                        width="180">
+                        <template slot-scope="scope">
+                            <span class="tableRow" @click="chooseDoc(scope.row)">{{scope.row}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="">
+                        <template slot-scope="scope">
+                            <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="sign" @click="closeWindow()"><</div>
+            </template>
+            <div class="sign2" v-else @click="showWindow()">></div>
+        </div>
       <span>文档编辑</span>
       <div>
 
         <span class="mess" @click="saveText">
           <i class="el-icon-s-order"></i>
           <span>保存文档</span>
-        </span>
-
-        <span class="mess" @click="back">
-          <i class="el-icon-refresh-left"></i>
-          <span>返回</span>
         </span>
 
       </div>
@@ -58,7 +77,17 @@
         @onCreated="onCreated"
       />
     </div>
-
+      <el-dialog class="dialog2" title="创建文档" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 375px">
+          <el-form :model="insertData" label-width="120px">
+              <el-form-item label="文档名称：">
+                  <el-input v-model="insertData.docName" />
+              </el-form-item>
+          </el-form>
+          <div style="text-align: center;">
+              <el-button type="danger" @click="dialogClosed" circle style="width: 40px;height: 40px;-webkit-border-radius: 80px;float: left; margin-left: 100px;">取消</el-button>
+              <el-button type="primary" @click="createDocument()" style="width: 80px; height: 40px;margin:0 auto;">保存</el-button>
+          </div>
+      </el-dialog>
   </div>
 </template>
 
@@ -70,6 +99,14 @@ export default {
   components: { Editor, Toolbar },
   data() {
     return {
+        insertData:{
+            protoName: '',
+            canvasHeight: 1200,
+            canvasWidth: 1200,
+        },
+        dialogVisible:false,
+        isWindowShow:false,
+        docNames:[],
         activeIndex: 'myProject',
         oldAvatar: window.sessionStorage.getItem('src'),
       form: {
@@ -95,6 +132,72 @@ export default {
     }
   },
   methods: {
+      newDoc(){
+          const that = this
+          that.dialogVisible = true
+      },
+      dialogClosed() {
+          const that = this
+          that.dialogVisible = false
+      },
+      createDocument(){
+          const that = this
+          if(that.insertData.docName.length!==0){
+              this.$axios.post('/project/createDocument/',this.$qs.stringify({
+                  email: sessionStorage.getItem('email'),
+                  URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+that.insertData.docName,
+                  content:' '
+              })).then(res => {
+                  console.log(res)
+                  if(res.data.result === 0){
+                      that.$message.success("创建成功")
+                      this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
+                          email: sessionStorage.getItem('email'),
+                          URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
+                      })).then(res => {
+                          console.log(res)
+                          if(res.data.result === 0){
+                              that.docNames = res.data.docNames
+                          }
+                      })
+                      that.dialogVisible = false
+                  }else if(res.data.result === 1){
+                      that.$message.error("错误的请求")
+                  }else{
+                      that.$message.error("文档名称已存在")
+                  }
+              })
+          }
+      },
+      handleDelete(index, docName){
+          const that = this
+          this.$axios.post('/project/removeDocument/', this.$qs.stringify({
+              email: sessionStorage.getItem("email"),
+              URL: sessionStorage.getItem('group') +'/项目文件夹/'+sessionStorage.getItem('project')+'/'+docName,
+          })).then(res =>{
+              console.log(res)
+              if(res.data.result === 0){
+                  that.$message.success("删除文档成功")
+              }else{
+                  that.$message.error("请求错误")
+              }
+              this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
+                  email: sessionStorage.getItem('email'),
+                  URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
+              })).then(res =>{
+                  console.log(res)
+                  if(res.data.result === 0){
+                      that.docNames = res.data.docNames
+                  }
+              })
+          })
+      },
+      showWindow(){
+          this.isWindowShow=true
+      },
+      closeWindow(){
+          this.isWindowShow=false
+      },
       gotoProto(){
           this.$router.push({name:'prototype'})
       },
@@ -121,7 +224,7 @@ export default {
           }
       },
       goBack() {
-          this.$router.push({ path: '/proInterface' })
+          this.$router.push({ path: '/workSpace' })
       },
       gotoCenter(){
           this.$router.push({name:'userInfo'})
@@ -216,7 +319,6 @@ export default {
     this.form.email=sessionStorage.getItem("email");
     this.form.groupName=sessionStorage.getItem("group");
     this.form.proName=sessionStorage.getItem("project");
-    this.form.docName=sessionStorage.getItem("document"); //名称对没
       this.$axios.post('/project/checkDocuments/',this.$qs.stringify({
           email: sessionStorage.getItem('email'),
           URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
@@ -224,16 +326,17 @@ export default {
           console.log(res)
           if(res.data.result === 0){
               that.docNames = res.data.docNames
+              that.form.docName = res.data.docNames[0]
+              this.$axios.post('/project/checkDocument/',this.$qs.stringify({
+                  email: sessionStorage.getItem('email'),
+                  URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+that.form.docName
+              }))
+                  .then(res =>{
+                      this.form.content=res.data.content;
+                      this.html=res.data.content;
+                  })
           }
       })
-    this.$axios.post('/project/checkDocument/',this.$qs.stringify({
-        email: sessionStorage.getItem('email'),
-        URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
-    }))
-    .then(res =>{
-      this.form.content=res.data.content;
-      this.html=res.data.content;
-    })
     this.editTime=new Date();
     this.getInfo();
   },

@@ -61,18 +61,6 @@ const routes = [
         component: () => import('../components/user/Retrieve.vue')
     },
     {
-        path: '/proInterface',
-        name: 'proInterface',
-        component:() =>import('../components/ProInterface.vue'),
-        children: [
-            {
-                path: 'prototype',
-                name: 'prototype',
-                component:() =>import('@/components/Prototype.vue')
-            }
-        ]
-    },
-    {
         path: '/workSpace',
         name: 'workSpace',
         component:() =>import('../components/WorkSpace.vue'),
