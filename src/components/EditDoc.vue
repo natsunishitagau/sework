@@ -92,7 +92,6 @@ export default {
         // 所有的菜单配置，都要在 MENU_CONF 属性下
         MENU_CONF: {}
       },
-        docNames:[]
     }
   },
   methods: {
@@ -127,29 +126,42 @@ export default {
       gotoCenter(){
           this.$router.push({name:'userInfo'})
       },
-    onCreated(editor) {
-      this.editor = Object.seal(editor) // 【注意】一定要用 Object.seal() 否则会报错
-    },
-    onChange(editor) {
-      console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
-    },
-    saveText() {
-        const that=this;
-      const editor = this.editor;
-      console.log(editor.getHtml());
-      this.form.content=editor.getHtml();
-      // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
-      this.$axios.post('/project/saveDocument/',this.$qs.stringify({
-          email: that.form.email,
-          URL: that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName,
-          content: that.form.content
-      })).then(res =>{
-        that.$message.success("保存成功")
-      })
-    },
-    back() {
-      this.$router.push({name:'proInterface'})
-    },
+      getInfo(){
+          this.form.proName=sessionStorage.getItem("project");
+          this.form.docName=sessionStorage.getItem("document");
+          this.$axios.post('/project/checkDocument/',this.$qs.stringify({
+              email: sessionStorage.getItem('email'),
+              URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
+          }))
+              .then(res =>{
+                  this.form.content=res.data.content;
+                  this.html=res.data.content;
+              })
+      },
+      onCreated(editor) {
+          this.editor = Object.seal(editor) // 【注意】一定要用 Object.seal() 否则会报错
+      },
+      onChange(editor) {
+          console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
+      },
+      saveText() {
+          const that=this;
+          const editor = this.editor;
+          console.log(editor.getHtml());
+          this.form.content=editor.getHtml();
+          // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
+          console.log(this.form)
+          this.$axios.post('/project/saveDocument/',this.$qs.stringify({
+              email: that.form.email,
+              URL: that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName,
+              content: that.form.content
+          })).then(res =>{
+              that.$message.success("保存成功")
+          })
+      },
+      back() {
+          this.$router.push({name:'proInterface'})
+      },
       chooseDoc(item){
           const that = this
           that.form.docName = item
@@ -161,8 +173,33 @@ export default {
                   this.form.content=res.data.content;
                   this.html=res.data.content;
               })
-      }
-  },
+      },
+      initWebSocket(){
+          this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.form.groupName+"_项目文件夹_"+this.form.proName+'_'+this.form.docName+"/");
+          this.websock.onmessage=this.websocketOnMessage;
+          this.websock.onopen =this.websocketOnOpen;
+          this.websock.onerror=this.websocketOnError;
+          this.websock.onclose=this.websocketClose;
+      },
+      sendWebSocketMessage(msg){
+          this.websock.send(JSON.stringify(msg))
+      },
+      websocketOnMessage(e){
+          let msg=JSON.parse(e.data);
+          this.html=msg.content;
+      },
+      websocketOnOpen(e){
+          console.log(e);
+
+      },
+      websocketOnError(e){
+          console.log(e);
+      },
+      websocketClose(e){
+          console.log(e);
+      },
+      editTime: null,
+    },
   mounted() { //ctrl+s保存
     var that=this;
     document.onkeydown = function(e) {
@@ -172,6 +209,7 @@ export default {
           that.saveText()//;saveProject
         }
     };
+    this.initWebSocket();
   },
   created() {
       const that = this
@@ -196,11 +234,30 @@ export default {
       this.form.content=res.data.content;
       this.html=res.data.content;
     })
+    this.editTime=new Date();
+    this.getInfo();
   },
   beforeDestroy() {
     const editor = this.editor
-    if (editor == null) return
-      editor.destroy() // 组件销毁时，及时销毁 editor
+    if (editor == null)
+        return editor.destroy() // 组件销毁时，及时销毁 editor
+  },
+  watch: {
+    html(newValue, oldValue)
+    {
+      this.form.content=newValue;
+      var nowTime=new Date();
+
+      if(this.websock.readyState===1&&(nowTime-this.editTime>=1200))
+      {
+        this.editTime=nowTime;
+        this.sendWebSocketMessage({
+          email: this.form.email,
+          URL: this.form.groupName+'/项目文件夹/'+this.form.proName+'/'+this.form.docName,
+          content: this.form.content
+        });
+      }
+    },
   },
 }
 </script>

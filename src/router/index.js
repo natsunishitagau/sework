@@ -133,6 +133,11 @@ const routes = [
                 name: 'recycleBin',
                 component:() =>import('../components/team/RecycleBin.vue')
             },
+            {
+                path: 'docCenter',
+                name: 'docCenter',
+                component:() =>import('../components/team/DocCenter.vue')
+            },
         ]
     }
 
