@@ -10,6 +10,19 @@
           <span>保存文档</span>
         </span>
 
+        <span class="export">
+          <el-dropdown trigger="click">
+            <el-button type="text" size="medium">
+              <i class="el-icon-printer"></i>&nbsp;导出为
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click="printPDF">word</el-dropdown-item>
+              <el-dropdown-item @click="printWORD">pdf</el-dropdown-item>
+              <el-dropdown-item @click="printMD">markdown</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </span>
+
       </div>
     </header>
 
@@ -30,11 +43,17 @@
       />
     </div>
 
+    <div v-html="printContent" style="display:none" id="print-pdf">
+    </div>
+
   </div>
 </template>
 
 <script>
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import htmlDocx from 'html-docx-js/dist/html-docx';
+import saveAs from 'file-saver';
+import htmlPdf from '../utils/pdf.js';
 
 export default {
   name: 'editDoc',
@@ -48,13 +67,14 @@ export default {
         email: "",
         groupName: "",
         content: "",
-        URL: ""
+        URL: "",
+        location: []
       },
       editor: null,
       html: '',
       toolbarConfig: {
           // toolbarKeys: [ /* 显示哪些菜单，如何排序、分组 */ ],
-          // excludeKeys: [ /* 隐藏哪些菜单 */ ],
+          excludeKeys: [ 'group-video' ],
       },
       editorConfig: {
         placeholder: '请输入内容...',
@@ -64,6 +84,7 @@ export default {
         MENU_CONF: {}
       },
       editTime: null,
+      printContent: "",
     }
   },
   methods: {
@@ -86,6 +107,7 @@ export default {
       const editor = this.editor;
       console.log(editor.getHtml());
       this.form.content=editor.getHtml();
+      this.printContent=this.form.content;
       // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
       console.log(this.form)
       this.$axios.post('/project/saveDocument/',this.$qs.stringify({
@@ -112,6 +134,9 @@ export default {
     websocketOnMessage(e){
       let msg=JSON.parse(e.data);
       this.html=msg.content;
+      //console.log(msg.nickname)
+      // msg.location [0],[1]
+      
     },
     websocketOnOpen(e){
       console.log(e);
@@ -122,6 +147,38 @@ export default {
     websocketClose(e){
       console.log(e);
     },
+
+    printPDF() {
+      var Opdf=document.getElementById('print-pdf');
+      Opdf.setAttribute('style','display:block');
+      htmlPdf.getPdf('导出pdf', document.querySelector('#print-pdf'));
+      Opdf.setAttribute('style','display:none');
+    },
+    printWORD() {
+      let htmlStr = this.printContent;
+      let page = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${htmlStr}        
+          </body></html>`
+      saveAs(
+          htmlDocx.asBlob(page, {
+              orientation: "landscape"
+          }),
+          this.docName+".doc"
+      )
+    },
+    printMD() {
+      var that=this;
+      this.$axios.post('/project/htmlToMarkdowm/',this.$qs.stringify({
+          htmlContent: that.printContent
+      })).then(res =>{
+        console.log(res.data);
+        saveAs(
+          new Blob([res.data.markdownContent]),
+          this.docName+".md"
+        )
+      })
+    }
+
+
   },
   mounted() { //ctrl+s保存
     var that=this;
@@ -154,7 +211,12 @@ export default {
       if(this.websock.readyState===1&&(nowTime-this.editTime>=1200))
       {
         this.editTime=nowTime;
-        this.sendWebSocketMessage(this.form);
+        const domSelection = document.getSelection()
+        const domRange = domSelection.getRangeAt(0)
+        const selectionRect = domRange.getBoundingClientRect()
+        
+        this.form.location= [ selectionRect.x, selectionRect.y ]
+        this.sendWebSocketMessage( this.form );
       }
     },
     url() {
@@ -176,7 +238,7 @@ export default {
     font-family: Mulish;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
   }
   header>span
   {
@@ -196,6 +258,19 @@ export default {
   .mess:hover
   {
     background-color: rgb(240, 240, 240);
+  }
+  .export
+  {
+    margin-left: 20px;
+    height: 28.4px;
+    line-height: 28.4px;
+  }
+  ::v-deep .el-button--text{
+    font-size: 15px;
+    color: black;
+  }
+  ::v-deep .el-button--medium{
+    padding: 0;
   }
 </style>
 <style src="@wangeditor/editor/dist/css/style.css"></style>
