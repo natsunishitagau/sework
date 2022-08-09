@@ -22,6 +22,11 @@ const routes = [
         component:() =>import('@/components/Prototype.vue')
     },
     {
+        path: '/getPreviews',
+        name: 'getPreviews',
+        component:()=>import('@/views/GetPreviews.vue')
+    },
+    {
         path: '/emptyPage',
         name: 'emptyPage',
         component: EmptyPage
@@ -85,6 +90,11 @@ const routes = [
                 path: 'messageContent',
                 name: 'messageContent',
                 component:() =>import('../components/personal/MessageContent.vue')
+            },
+            {
+                path: 'shareLink',
+                name: 'shareLink',
+                component:()=>import('../components/personal/ShareLink.vue')
             },
             {
                 path: 'recentLook',
