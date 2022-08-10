@@ -28,26 +28,26 @@
                 <el-table
                     height="400"
                     :data="protoNames"
-                    style="width: 200px">
+                    style="width: 230px">
                     <el-table-column
                         label="页面"
-                        width="180">
+                        width="150">
                         <template slot-scope="scope">
                             <span class="tableRow" @click="choosePro(scope.row)">{{scope.row}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="">
+                    <el-table-column label="" width="80">
                         <template slot-scope="scope">
                             <el-button
                                 size="mini"
                                 type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                @click="handleDelete(scope.$index, scope.row)" style="width: 70px">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="sign" @click="closeWindow()">&lt;</div>
+                <div class="sign" @click="closeWindow()"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M896 192H128v128h768V192zm0 256H384v128h512V448zm0 256H128v128h768V704zM320 384 128 512l192 128V384z"></path></svg></div>
             </template>
-            <div class="sign2" v-else @click="showWindow()">></div>
+            <div class="sign2" v-else @click="showWindow()"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M128 192h768v128H128V192zm0 256h512v128H128V448zm0 256h768v128H128V704zm576-352 192 160-192 128V352z"></path></svg></div>
         </div>
         <main>
 
@@ -466,9 +466,9 @@ export default {
     position: absolute;
     top: 0px;
     left: 200px;
-    width: 12px;
-    height: 20px;
-    background: gray;
+    width: 24px;
+    height: 40px;
+    //background: gray;
 }
 .sign:hover{
     cursor: pointer;
@@ -476,9 +476,9 @@ export default {
 .sign2{
     position: absolute;
     top: 0px;
-    width: 12px;
-    height: 20px;
-    background: gray;
+    width: 24px;
+    height: 40px;
+    //background: gray;
 }
 .sign2:hover{
     cursor: pointer;
