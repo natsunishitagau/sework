@@ -33,9 +33,14 @@
 
                 <el-table-column prop="status" label="项目状态" width="250">
                     <template #default="scope">
-                        <el-tag v-if="scope.row.status==='进行中'">{{scope.row.status}}</el-tag>
-                        <el-tag style="info" v-else-if="scope.row.status==='未开始'">{{scope.row.status}}</el-tag>
-                        <el-tag style="success" v-else>{{scope.row.status}}</el-tag>
+                        <el-dropdown>
+                            <el-tag>{{scope.row.status}}</el-tag>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item v-if="scope.row.status!=='未开始'" @click.native="changeStatus(scope.row.name,'未开始')">未开始</el-dropdown-item>
+                                <el-dropdown-item v-if="scope.row.status!=='进行中'" @click.native="changeStatus(scope.row.name,'进行中')">进行中</el-dropdown-item>
+                                <el-dropdown-item v-if="scope.row.status!=='已完成'" @click.native="changeStatus(scope.row.name,'已完成')">已完成</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </template>
                 </el-table-column>
 
@@ -116,6 +121,21 @@ export default {
         }
     },
     methods: {
+        changeStatus(name,state){
+            const that = this
+            this.$axios.post('/group/changeProState/',this.$qs.stringify({
+                email: sessionStorage.getItem('email'),
+                groupName: sessionStorage.getItem('group'),
+                proName: name,
+                state: state
+            })).then(res =>{
+                console.log(res)
+                if(res.data.result==0){
+                    this.$message.success('修改状态成功')
+                    that.getInfo()
+                }
+            })
+        },
         copy(proName){
             const that = this
             // alert(proName)

@@ -51,6 +51,8 @@
 
 <script>
 export default {
+    components:{
+    },
     data() {
         return {
             activeIndex: 'myProject',
@@ -59,7 +61,6 @@ export default {
             oldAvatar: window.sessionStorage.getItem('src'),
             projectName: 'a',
             iframeSrc: "https://online.visual-paradigm.com/app/diagrams/#diagram:proj=0&type=ClassDiagram&gallery=/repository/492e9b34-93bb-426d-b807-003cb1e4875c.xml&name=Students%20Enrollment%20Class%20Diagram",
-
         }
     },
     created() {
@@ -91,6 +92,10 @@ export default {
         window.onresize = function(){
             changeMapIframe()
         }
+        window.onload = function (){
+            document.getElementById('child')
+                .contentWindow.postMessage("主界面消息","")
+        }
     },
     methods: {
         gotoCenter(){
@@ -119,7 +124,7 @@ export default {
             });
         },
         goBack() {
-            this.$router.push({ path: '/workSpace/proInterface' })
+            this.$router.push({ name:'workSpace'})
         },
 
 
