@@ -8,21 +8,21 @@
                 @select="handleSelect"
                 background-color="#FFF"
                 style="padding-left: 10%; padding-right: 10%">
-
+                <el-menu-item @click="goBack"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg></el-menu-item>
                 <el-menu-item index="myProject" >项目名称: {{projectName}}</el-menu-item>
-                <el-menu-item index="2">页面名称: {{prototypeName}}</el-menu-item>
-                <el-menu-item index="3" @click="newProto">创建页面</el-menu-item>
-                <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
+<!--                <el-menu-item index="2">页面名称: {{prototypeName}}</el-menu-item>-->
+<!--                <el-menu-item index="3" @click="newProto">创建页面</el-menu-item>-->
+<!--                <el-menu-item @click="gotoCenter()" style="margin-left: 100px">个人中心</el-menu-item>-->
                 <el-menu-item index="avatar" style="float: right">
                     <el-avatar :src="oldAvatar"></el-avatar>
                 </el-menu-item>
-                <el-menu-item @click="goBack">返回</el-menu-item>
-                <el-menu-item index="Document" @click="gotoDoc">项目文档</el-menu-item>
+                <el-menu-item index="Document" @click="gotoDoc" style="margin-left: 300px">项目文档</el-menu-item>
                 <el-menu-item index="UML" @click="gotoUml">UML图</el-menu-item>
                 <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
             </el-menu>
         </el-header>
         <Toolbar/>
+        <svg style="width: 15px;height: 15px;position: absolute; top:22px;left:30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg>
         <div class="floatWindow" style="position: absolute; z-index: 5;top: 120px">
             <template v-if="isWindowShow">
                 <el-table
@@ -85,7 +85,7 @@
                 <CanvasAttr v-else></CanvasAttr>
             </section>
         </main>
-        <el-dialog class="dialog" title="创建原型" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 500px">
+        <el-dialog class="dialog" title="创建原型" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 550px">
             <el-form :model="insertData" label-width="120px">
                 <el-form-item label="原型名称：">
                     <el-input v-model="insertData.protoName" />
@@ -95,6 +95,14 @@
                 </el-form-item>
                 <el-form-item label="画布宽：">
                     <el-input v-model="insertData.canvasWidth"/>
+                </el-form-item>
+                <el-form-item label="页面模板：">
+                    <el-select v-model="model" placeholder="请选择页面模板">
+                        <el-option label="默认" value="0"></el-option>
+                        <el-option label="模板1" value="a"></el-option>
+                        <el-option label="模板2" value="b"></el-option>
+                        <el-option label="模板3" value="c"></el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <div style="text-align: center;">
@@ -123,6 +131,7 @@ export default {
     components: { Editor, ComponentList, AnimationList, EventList, Toolbar, RealTimeComponentList, CanvasAttr },
     data() {
         return {
+            model: "",
             defaultComponentData:[{
                 animations:[],
                 events:{},
@@ -184,6 +193,13 @@ export default {
     created() {
         const that = this
         this.projectName = sessionStorage.getItem('project')
+        this.$axios.post('/group/updateProjectCheckTime/',this.$qs.stringify({
+            email: sessionStorage.getItem('email'),
+            groupName: sessionStorage.getItem('group'),
+            proName: sessionStorage.getItem('project')
+        })).then(res =>{
+            console.log(res)
+        })
         this.$axios.post('/project/checkPrototypes/',this.$qs.stringify({
             email: sessionStorage.getItem('email'),
             groupName: sessionStorage.getItem('group'),

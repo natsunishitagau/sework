@@ -34,7 +34,9 @@
                 <el-table-column prop="status" label="项目状态" width="250">
                     <template #default="scope">
                         <el-dropdown>
-                            <el-tag>{{scope.row.status}}</el-tag>
+                            <el-tag type="info" v-if="scope.row.status=='未开始'">{{scope.row.status}}</el-tag>
+                            <el-tag type="warning" v-else-if="scope.row.status=='进行中'">{{scope.row.status}}</el-tag>
+                            <el-tag type="success" v-else>{{scope.row.status}}</el-tag>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item v-if="scope.row.status!=='未开始'" @click.native="changeStatus(scope.row.name,'未开始')">未开始</el-dropdown-item>
                                 <el-dropdown-item v-if="scope.row.status!=='进行中'" @click.native="changeStatus(scope.row.name,'进行中')">进行中</el-dropdown-item>

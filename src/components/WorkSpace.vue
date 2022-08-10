@@ -122,6 +122,10 @@
                 <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M352 480h320a32 32 0 1 1 0 64H352a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="M480 672V352a32 32 0 1 1 64 0v320a32 32 0 0 1-64 0z"></path><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z"></path></svg>
                 <div>新建团队</div>
             </div>
+            <div class="switch" @click="gotoHome">
+                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M352 159.872V230.4a352 352 0 1 0 320 0v-70.528A416.128 416.128 0 0 1 512 960a416 416 0 0 1-160-800.128z"></path><path fill="currentColor" d="M512 64q32 0 32 32v320q0 32-32 32t-32-32V96q0-32 32-32z"></path></svg>
+                <div>注销</div>
+            </div>
         </div>
 
     </div>
@@ -187,6 +191,9 @@ export default {
         }
     },
     methods: {
+        gotoHome(){
+            this.$router.push({name: 'home'})
+        },
         created(){
             sessionStorage.setItem('mode', '0')
         },

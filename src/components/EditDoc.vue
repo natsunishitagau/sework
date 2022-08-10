@@ -1,6 +1,6 @@
 <template>
   <div>
-      <el-header style="width: 100vw">
+      <el-header style="display: block">
           <el-menu
               :default-active="activeIndex"
               class="el-menu-demo"
@@ -9,21 +9,21 @@
               background-color="#FFF"
               style="padding-left: 10%; padding-right: 10%">
 
+              <el-menu-item @click="goBack"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg></el-menu-item>
               <el-menu-item index="myProject" >项目名称: {{form.proName}}</el-menu-item>
-              <el-menu-item index="2">文档名称: {{form.docName}}</el-menu-item>
-              <el-menu-item index="3" @click="newDoc">创建文档</el-menu-item>
-              <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
+<!--              <el-menu-item index="2">文档名称: {{form.docName}}</el-menu-item>-->
+<!--              <el-menu-item index="3" @click="newDoc">创建文档</el-menu-item>-->
+<!--              <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>-->
               <el-menu-item index="avatar" style="float: right;">
                   <el-avatar :src="oldAvatar"></el-avatar>
               </el-menu-item>
-              <el-menu-item @click="goBack">返回</el-menu-item>
-              <el-menu-item @click="gotoProto">项目原型</el-menu-item>
+              <el-menu-item @click="gotoProto" style="margin-left: 300px">项目原型</el-menu-item>
 <!--              <el-menu-item >项目文档</el-menu-item>-->
               <el-menu-item @click="gotoUml">UML图</el-menu-item>
               <el-menu-item @click="logout" style="float: right;margin-left: 300px">退出登录</el-menu-item>
           </el-menu>
       </el-header>
-
+      <svg style="width: 15px;height: 15px;position: absolute; top:22px;left:30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg>
     <header>
         <div class="floatWindow" style="position: absolute; z-index: 5;top: 70px">
             <template>
@@ -47,7 +47,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-
+                <div class="sign1" @click="newDoc"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"></path></svg></div>
             </template>
         </div>
 
@@ -487,6 +487,17 @@ export default {
 </script>
 
 <style scoped>
+.sign1{
+    position: absolute;
+    z-index: 5;
+    width: 24px;
+    height: 40px;
+    top:7px;
+    left: 175px;
+}
+.sign1:hover{
+    cursor: pointer;
+}
   i
   {
     height: 18px;
@@ -532,5 +543,9 @@ export default {
   ::v-deep .el-button--medium{
     padding: 0;
   }
+.tableRow:hover{
+    cursor: pointer;
+    color: #00c3ff;
+}
 </style>
 <style src="@wangeditor/editor/dist/css/style.css"></style>

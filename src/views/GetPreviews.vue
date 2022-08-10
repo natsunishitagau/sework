@@ -244,12 +244,9 @@ export default {
             this.prototypeName = name
             try {
                 const res = await axios.post('/project/checkPrototype/', this.$qs.stringify({
-                    // email: this.email,
-                    // groupName: this.groupName,
-                    // proName: this.proName,
-                    email: '2041341499@qq.com',
-                    groupName: 'sxc',
-                    proName: 'p1',
+                    email: this.email,
+                    groupName: this.groupName,
+                    proName: this.projectName,
                     protoName: name
                 }))
                 if(res.data.result === 0) {
