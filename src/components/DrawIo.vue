@@ -9,16 +9,18 @@
                 @select="handleSelect"
                 background-color="#FFF"
                 style="padding-left: 10%; padding-right: 10%">
+                <el-menu-item @click="goBack"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg></el-menu-item>
                 <el-menu-item index="myProject" >项目名称: {{projectName}}</el-menu-item>
-                <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
                 <el-menu-item index="avatar" style="float: right">
                     <el-avatar :src="oldAvatar"></el-avatar>
                 </el-menu-item>
-                <el-menu-item @click="goBack">返回</el-menu-item>
+                <el-menu-item @click="gotoProto" style="margin-left: 400px">项目原型</el-menu-item>
                 <el-menu-item index="Document" @click="gotoDoc">项目文档</el-menu-item>
+                <el-menu-item>UML图</el-menu-item>
                 <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
             </el-menu>
         </el-header>
+        <svg style="width: 15px;height: 15px;position: absolute; top:22px;left:30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg>
     </div>
     <div style="margin-left:3%">
       <el-button small color="primary" @click="save" icon="el-icon-delete-solid">保存</el-button>
@@ -55,15 +57,6 @@
                     </path>
                 </svg>
                 我的消息
-            </div>
-            <div @click="newGroup" style="margin-left:20px; margin-top: 60px; cursor:pointer">
-                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8="" style="width:16px;height:16px;margin-left:10px;">
-                    <path fill="currentColor" d="M352 480h320a32 32 0 1 1 0 64H352a32 32 0 0 1 0-64z">
-                    </path><path fill="currentColor" d="M480 672V352a32 32 0 1 1 64 0v320a32 32 0 0 1-64 0z">
-                </path><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z">
-                </path>
-                </svg>
-                新建团队
             </div>
         </div>
     </el-drawer>
@@ -204,6 +197,9 @@ export default {
     },
 
     methods: {
+        gotoProto(){
+            this.$router.push({name:'prototype'})
+        },
         async getURLData() {
             try {
                 const res = await axios.post('/project/checkUML/', this.$qs.stringify({
@@ -266,6 +262,7 @@ export default {
         },
         //收藏夹
         collect() {
+            sessionStorage.setItem('destination', 'message')
             this.$router.push({name: 'collectProject'});
         },
         addToolbarItem(graph, toolbar, prototype, image) {
