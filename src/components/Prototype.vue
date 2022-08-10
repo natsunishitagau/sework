@@ -45,6 +45,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div class="sign1" @click="newProto"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"></path></svg></div>
                 <div class="sign" @click="closeWindow()"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M896 192H128v128h768V192zm0 256H384v128h512V448zm0 256H128v128h768V704zM320 384 128 512l192 128V384z"></path></svg></div>
             </template>
             <div class="sign2" v-else @click="showWindow()"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M128 192h768v128H128V192zm0 256h512v128H128V448zm0 256h768v128H128V704zm576-352 192 160-192 128V352z"></path></svg></div>
@@ -481,6 +482,17 @@ export default {
     //background: gray;
 }
 .sign2:hover{
+    cursor: pointer;
+}
+.sign1{
+    position: absolute;
+    z-index: 5;
+    width: 24px;
+    height: 40px;
+    top:0px;
+    left: 175px;
+}
+.sign1:hover{
     cursor: pointer;
 }
 </style>

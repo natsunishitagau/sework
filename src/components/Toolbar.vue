@@ -1,39 +1,39 @@
 <template>
     <div>
         <div class="toolbar">
-            <el-button @click="undo">撤消</el-button>
-            <el-button @click="redo">重做</el-button>
+            <el-button @click="undo" icon="el-icon-back">撤消</el-button>
+            <el-button @click="redo" icon="el-icon-refresh-left">重做</el-button>
             <label for="input" class="insert">插入图片</label>
             <input
-                id="input"
-                type="file"
-                hidden
-                @change="handleFileChange"
+            id="input"
+            type="file"
+            hidden
+            @change="handleFileChange"
             />
-            <el-button style="margin-left: 10px;" @click="preview(false)">预览</el-button>
-            <el-button @click="save">保存</el-button>
-            <el-button @click="clearCanvas">清空画布</el-button>
-            <el-button :disabled="!areaData.components.length" @click="compose">组合</el-button>
-            <el-button
-                :disabled="!curComponent || curComponent.isLock || curComponent.component != 'Group'"
-                @click="decompose"
-            >
-                拆分
+            <el-button style="margin-left: 10px;" @click="preview(false)" icon="el-icon-view">预览</el-button>
+            <el-button @click="save" icon="el-icon-folder-checked">保存</el-button>
+            <el-button @click="clearCanvas" icon="el-icon-refresh">清空画布</el-button>
+            <el-button :disabled="!areaData.components.length" @click="compose" icon="el-icon-attract">组合</el-button>
+            <el-button icon="el-icon-scissors"
+                       :disabled="!curComponent || curComponent.isLock || curComponent.component != 'Group'"
+                                   @click="decompose"
+                                   >
+            拆分
             </el-button>
 
-            <el-button :disabled="!curComponent || curComponent.isLock" @click="lock">锁定</el-button>
-            <el-button :disabled="!curComponent || !curComponent.isLock" @click="unlock">解锁</el-button>
-            <el-button @click="preview(true)">截图</el-button>
+            <el-button :disabled="!curComponent || curComponent.isLock" @click="lock" icon="el-icon-paperclip">锁定</el-button>
+            <el-button :disabled="!curComponent || !curComponent.isLock" @click="unlock" icon="el-icon-s-release">解锁</el-button>
+            <el-button @click="preview(true)" icon="el-icon-platform-eleme">截图</el-button>
 
             <div class="canvas-config">
-                <span>画布大小</span>
-                <input v-model="canvasStyleData.width">
-                <span>*</span>
-                <input v-model="canvasStyleData.height">
+            <span>画布大小</span>
+            <input v-model="canvasStyleData.width">
+            <span>*</span>
+            <input v-model="canvasStyleData.height">
             </div>
             <div class="canvas-config">
-                <span>画布比例</span>
-                <input v-model="scale" @input="handleScaleChange"> %
+            <span>画布比例</span>
+            <input v-model="scale" @input="handleScaleChange"> %
             </div>
         </div>
 
