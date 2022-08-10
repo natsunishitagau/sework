@@ -105,6 +105,7 @@ export default {
       const editor = this.editor;
       this.form.content=editor.getHtml();
       this.printContent=this.form.content;
+      console.log(this.printContent);
       // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
       this.$axios.post('/project/saveDocument/',this.$qs.stringify({
           email: that.form.email,

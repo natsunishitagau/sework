@@ -3,17 +3,19 @@
         <header>
             <span>团队项目</span>
             <div>
-        <span class="newpro" @click="preCreate">
-          <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M832 384H576V128H192v768h640V384zm-26.496-64L640 154.496V320h165.504zM160 64h480l256 256v608a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V96a32 32 0 0 1 32-32zm320 512V448h64v128h128v64H544v128h-64V640H352v-64h128z"></path></svg>
-          <span>新建项目</span>
-        </span>
+              <el-input v-model="search" size="mini" prefix-icon="el-icon-search" placeholder="输入项目名搜索"/>
+              <span class="newpro" @click="preCreate">
+                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M832 384H576V128H192v768h640V384zm-26.496-64L640 154.496V320h165.504zM160 64h480l256 256v608a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V96a32 32 0 0 1 32-32zm320 512V448h64v128h128v64H544v128h-64V640H352v-64h128z"></path></svg>
+                <span>新建项目</span>
+              </span>
             </div>
         </header>
         <hr/>
 
         <div>
-            <el-table :data="tableData" height="550" borderstyle="width:100%">
-                <el-table-column label="项目名" width="300">
+          <div v-if="searchData.length!=0">
+            <el-table :data="searchData" height="550" borderstyle="width:100%">
+                <el-table-column label="项目名" width="280">
                     <template #default="scope">
                         <div @mouseenter="show(scope)" @mouseleave="leave">
                           <a :title="scope.row.name"
@@ -28,15 +30,16 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="time" label="创建时间" width="300"></el-table-column>
 
-                <el-table-column prop="status" label="项目状态">
+                <el-table-column prop="status" label="项目状态" width="250">
                     <template #default="scope">
                         <el-tag v-if="scope.row.status==='进行中'">{{scope.row.status}}</el-tag>
                         <el-tag style="info" v-else-if="scope.row.status==='未开始'">{{scope.row.status}}</el-tag>
                         <el-tag style="success" v-else>{{scope.row.status}}</el-tag>
                     </template>
                 </el-table-column>
+
+                <el-table-column prop="time" label="创建时间" width="300" sortable sort-by="time"></el-table-column>
 
                 <el-table-column fixed="right" width="200" label="操作">
                     <template #default="scope">
@@ -49,6 +52,12 @@
                 </el-table-column>
 
             </el-table>
+          </div>
+
+          <div v-else>
+            <el-empty description="无搜索结果"></el-empty>
+          </div>
+
         </div>
 
         <el-dialog v-model="isCreate" :visible.sync="isCreate" title="新建项目" width="400px">
@@ -99,6 +108,8 @@ export default {
                 newProName: ""
             },
             tableData: [],
+            search: "",
+            searchData:[],
             isCreate: false,
             isRename: false,
             showCollect: -1
@@ -141,6 +152,8 @@ export default {
                         pro.isCollect=res.data.isCollect[i];
                         that.tableData.push(pro);
                     }
+                    that.search="";
+                    that.searchData=that.tableData;
                 })
         },
         lookInfo(item) {
@@ -220,13 +233,27 @@ export default {
                     that.$message.success("删除成功！项目进入回收站。")
                     that.getInfo();
                 })
-        }
+        },
     },
     created() {
         this.form.email=sessionStorage.getItem("email");
         this.form.groupName=sessionStorage.getItem("group");
         this.getInfo();
+    },
+    watch: {
+      search() {
+        if(this.search.length!=0) {
+          this.searchData=[];
+          for(const item of this.tableData) {
+            if(item.name.includes(this.search)) {
+              this.searchData.push(item)
+            }
+          }
+        }
+        else this.searchData=this.tableData;
+      }
     }
+
 }
 </script>
 
@@ -248,6 +275,14 @@ header>span
 {
     font-size: 30px;
     font-weight: 700;
+}
+.el-input
+{
+  display: inline-flex;
+  width: 180px;
+  border-radius: 3px;
+  margin-left: 20px;
+  align-items: center;
 }
 .newpro
 {

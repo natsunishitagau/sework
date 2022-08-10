@@ -23,6 +23,7 @@
               <el-menu-item @click="logout" style="float: right;margin-left: 300px">退出登录</el-menu-item>
           </el-menu>
       </el-header>
+
     <header>
         <div class="floatWindow" style="position: absolute; z-index: 5;top: 120px">
             <template v-if="isWindowShow">
@@ -46,10 +47,11 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="sign" @click="closeWindow()"><</div>
+                <div class="sign" @click="closeWindow()">&lt;</div>
             </template>
             <div class="sign2" v-else @click="showWindow()">></div>
         </div>
+
       <span>文档编辑</span>
       <div>
 
@@ -95,11 +97,23 @@
         @onCreated="onCreated"
       />
     </div>
-      <el-dialog class="dialog2" title="创建文档" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 375px">
+      <el-dialog class="dialog2" title="创建文档" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 450px">
           <el-form :model="insertData" label-width="120px">
               <el-form-item label="文档名称：">
                   <el-input v-model="insertData.docName" />
               </el-form-item>
+
+              <el-form-item label="文档模板：">
+                <el-select v-model="model" placeholder="请选择文档模板">
+                  <el-option label="无模板" value="0"></el-option>
+                  <el-option label="模板一" value="a"></el-option>
+                  <el-option label="模板二" value="b"></el-option>
+                  <el-option label="模板三" value="c"></el-option>
+                  
+
+                </el-select>
+              </el-form-item>
+
           </el-form>
           <div style="text-align: center;">
               <el-button type="danger" @click="dialogClosed" circle style="width: 40px;height: 40px;-webkit-border-radius: 80px;float: left; margin-left: 100px;">取消</el-button>
@@ -156,6 +170,13 @@ export default {
       },
       editTime: null,
       printContent: "",
+      model: "",
+      model1:
+      "model1",
+      model2:
+      "model2",
+      model3:
+      "model3"
     }
   },
   methods: {
@@ -169,11 +190,28 @@ export default {
       },
       createDocument(){
           const that = this
-          if(that.insertData.docName.length!==0){
+          if(that.insertData.docName.length!==0)
+          {
+              switch(that.model)
+              {
+                case "a":
+                  this.form.content=this.model1;
+                  break;
+                case "b":
+                  this.form.content=this.model2;
+                  break;
+                case "c":
+                  this.form.content=this.model3;
+                  break;
+
+                default:
+                  this.form.content="";
+              }
+              that.model=""
               this.$axios.post('/project/createDocument/',this.$qs.stringify({
                   email: sessionStorage.getItem('email'),
                   URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+that.insertData.docName,
-                  content:' '
+                  content:that.form.content
               })).then(res => {
                   console.log(res)
                   if(res.data.result === 0){
@@ -281,6 +319,7 @@ export default {
           const editor = this.editor;
           this.form.content=editor.getHtml();
           this.printContent=this.form.content;
+          console.log(this.printContent)
           // alert(that.form.groupName+'/项目文件夹/'+that.form.proName+'/'+that.form.docName)
           this.$axios.post('/project/saveDocument/',this.$qs.stringify({
               email: that.form.email,
