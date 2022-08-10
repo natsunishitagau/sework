@@ -39,17 +39,17 @@ export default {
     grid-template-rows: repeat(auto-fill, 40px);
 
     .list {
-        width: 80px;
-        height: 40px;
-        border: 1px solid #ddd;
+        width: 70px;
+        height: 30px;
+        border: 2px solid #ddd;
         cursor: grab;
         text-align: center;
-        color: #333;
+        color: rgb(117, 40, 40);
         padding: 2px 5px;
         display: flex;
         align-items: center;
         justify-content: center;
-
+        background: linear-gradient(#feffed, #cccecf);
         &:active {
             cursor: grabbing;
         }
