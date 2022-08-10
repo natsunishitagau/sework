@@ -18,7 +18,7 @@
                 </el-menu-item>
                 <el-menu-item @click="goBack">返回</el-menu-item>
                 <el-menu-item index="Document" @click="gotoDoc">项目文档</el-menu-item>
-                <el-menu-item index="UML">UML图</el-menu-item>
+                <el-menu-item index="UML" @click="gotoUml">UML图</el-menu-item>
                 <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
             </el-menu>
         </el-header>
@@ -209,6 +209,9 @@ export default {
         listenGlobalKeyDown()
     },
     methods: {
+        gotoUml(){
+            this.$router.push({name: 'uml'})
+        },
         createPrototype(){
             const that = this
             mapState.componentData = that.defaultComponentData

@@ -19,7 +19,7 @@
               <el-menu-item @click="goBack">返回</el-menu-item>
               <el-menu-item @click="gotoProto">项目原型</el-menu-item>
 <!--              <el-menu-item >项目文档</el-menu-item>-->
-              <el-menu-item >UML图</el-menu-item>
+              <el-menu-item @click="gotoUml">UML图</el-menu-item>
               <el-menu-item @click="logout" style="float: right;margin-left: 300px">退出登录</el-menu-item>
           </el-menu>
       </el-header>
@@ -159,6 +159,9 @@ export default {
     }
   },
   methods: {
+      gotoUml(){
+          this.$router.push({name: 'uml'})
+      },
       newDoc(){
           const that = this
           that.dialogVisible = true
