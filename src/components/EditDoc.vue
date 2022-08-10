@@ -14,13 +14,13 @@
 <!--              <el-menu-item index="2">文档名称: {{form.docName}}</el-menu-item>-->
 <!--              <el-menu-item index="3" @click="newDoc">创建文档</el-menu-item>-->
 <!--              <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>-->
-              <el-menu-item index="avatar" style="float: right;">
+              <el-menu-item index="avatar" style="float: right;margin-right: -60px">
                   <el-avatar :src="oldAvatar"></el-avatar>
               </el-menu-item>
-              <el-menu-item @click="gotoProto" style="margin-left: 300px">项目原型</el-menu-item>
-<!--              <el-menu-item >项目文档</el-menu-item>-->
+              <el-menu-item @click="gotoProto" style="margin-left: 400px">项目原型</el-menu-item>
+              <el-menu-item >项目文档</el-menu-item>
               <el-menu-item @click="gotoUml">UML图</el-menu-item>
-              <el-menu-item @click="logout" style="float: right;margin-left: 300px">退出登录</el-menu-item>
+              <el-menu-item @click="logout" style="float: right;margin-left: 200px">退出登录</el-menu-item>
           </el-menu>
       </el-header>
       <svg style="width: 15px;height: 15px;position: absolute; top:22px;left:30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg>
@@ -78,7 +78,7 @@
       </div>
     </header>
 
-    <div style="border: 1px solid #ccc; margin-top: 10px;margin-left: 300px;margin-right: 20px">
+    <div v-if="form.docName!==' '" style="border: 1px solid #ccc; margin-top: 10px;margin-left: 300px;margin-right: 20px">
       <!-- 工具栏 -->
       <Toolbar
         style="border-bottom: 1px solid #ccc"
@@ -149,7 +149,7 @@ export default {
         email: "",
         groupName: "",
         proName: "",
-        docName: "",
+        docName: " ",
         content: "",
       },
       editor: null,
@@ -262,7 +262,15 @@ export default {
               })).then(res =>{
                   console.log(res)
                   if(res.data.result === 0){
-                      that.docNames = res.data.docNames
+                      if(res.data.docNames.length ===0){
+                          that.form.docName=' '
+                          that.docNames = res.data.docNames
+                      }
+                      else{
+                          that.docNames = res.data.docNames
+                          that.form.docName = res.data.docNames[0]
+                          that.getInfo()
+                      }
                   }
               })
           })
@@ -305,17 +313,18 @@ export default {
           this.$router.push({name:'userInfo'})
       },
       getInfo(){
+          const that = this
           this.form.proName=sessionStorage.getItem("project");
-          this.form.docName=sessionStorage.getItem("document");
+          // this.form.docName=sessionStorage.getItem("document");
           this.printContent=this.form.content;
           this.$axios.post('/project/checkDocument/',this.$qs.stringify({
               email: sessionStorage.getItem('email'),
-              URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+sessionStorage.getItem('document')
+              URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+ that.form.docName
           }))
               .then(res =>{
-                  this.form.content=res.data.content;
-                  this.html=res.data.content;
-                  this.printContent=this.form.content;
+                  that.form.content=res.data.content;
+                  that.html=res.data.content;
+                  that.printContent=that.form.content;
               })
       },
       onCreated(editor) {
@@ -443,21 +452,13 @@ export default {
           URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'
       })).then(res => {
           console.log(res)
-          if(res.data.result === 0){
+          if(res.data.result === 0 && res.data.docNames.length!==0){
               that.docNames = res.data.docNames
               that.form.docName = res.data.docNames[0]
-              this.$axios.post('/project/checkDocument/',this.$qs.stringify({
-                  email: sessionStorage.getItem('email'),
-                  URL: sessionStorage.getItem('group')+'/项目文件夹/'+sessionStorage.getItem('project')+'/'+that.form.docName
-              }))
-                  .then(res =>{
-                      this.form.content=res.data.content;
-                      this.html=res.data.content;
-                  })
+              this.editTime=new Date();
+              this.getInfo();
           }
       })
-    this.editTime=new Date();
-    this.getInfo();
   },
   beforeDestroy() {
     const editor = this.editor

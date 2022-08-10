@@ -13,10 +13,11 @@
 <!--                <el-menu-item index="2">页面名称: {{prototypeName}}</el-menu-item>-->
 <!--                <el-menu-item index="3" @click="newProto">创建页面</el-menu-item>-->
 <!--                <el-menu-item @click="gotoCenter()" style="margin-left: 100px">个人中心</el-menu-item>-->
-                <el-menu-item index="avatar" style="float: right">
+                <el-menu-item index="avatar" style="float: right;margin-right: -60px">
                     <el-avatar :src="oldAvatar"></el-avatar>
                 </el-menu-item>
-                <el-menu-item index="Document" @click="gotoDoc" style="margin-left: 300px">项目文档</el-menu-item>
+                <el-menu-item style="margin-left: 400px">项目原型</el-menu-item>
+                <el-menu-item index="Document" @click="gotoDoc">项目文档</el-menu-item>
                 <el-menu-item index="UML" @click="gotoUml">UML图</el-menu-item>
                 <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
             </el-menu>
@@ -50,7 +51,7 @@
             </template>
             <div class="sign2" v-else @click="showWindow()"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M128 192h768v128H128V192zm0 256h512v128H128V448zm0 256h768v128H128V704zm576-352 192 160-192 128V352z"></path></svg></div>
         </div>
-        <main>
+        <main v-if="prototypeName!==' '">
 
             <!-- 左侧组件列表 -->
             <section class="left">
@@ -85,9 +86,9 @@
                 <CanvasAttr v-else></CanvasAttr>
             </section>
         </main>
-        <el-dialog class="dialog" title="创建原型" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 550px">
+        <el-dialog class="dialog" title="创建页面" v-if="dialogVisible" :visible.sync="dialogVisible" width="35%" :modal-append-to-body="false" center @close="dialogClosed" style="display: flex;height: 550px">
             <el-form :model="insertData" label-width="120px">
-                <el-form-item label="原型名称：">
+                <el-form-item label="页面名称：">
                     <el-input v-model="insertData.protoName" />
                 </el-form-item>
                 <el-form-item label="画布高：">
@@ -205,7 +206,8 @@ export default {
             groupName: sessionStorage.getItem('group'),
             proName: sessionStorage.getItem('project')
         })).then(res => {
-            if(res.data.result === 0){
+            if(res.data.result === 0 && res.data.protoNames.length!==0){
+                console.log(res)
                 that.protoNames = res.data.protoNames
                 that.prototypeName = res.data.protoNames[0]
                 this.$axios.post('project/checkPrototype/', this.$qs.stringify({
@@ -222,6 +224,7 @@ export default {
                 })
             }
         })
+        console.log(that.prototypeName)
         // 全局监听按键事件
         listenGlobalKeyDown()
     },
@@ -304,7 +307,26 @@ export default {
                 })).then(res =>{
                     console.log(res)
                     if(res.data.result === 0){
-                        that.protoNames = res.data.protoNames
+                        if(res.data.protoNames.length===0){
+                            that.prototypeName=' '
+                            that.protoNames = res.data.protoNames
+                        }
+                        else{
+                            that.protoNames = res.data.protoNames
+                            that.prototypeName = res.data.protoNames[0]
+                            this.$axios.post('project/checkPrototype/', this.$qs.stringify({
+                                email: sessionStorage.getItem('email'),
+                                groupName: sessionStorage.getItem('group'),
+                                proName: sessionStorage.getItem('project'),
+                                protoName: that.prototypeName
+                            })).then(res => {
+                                console.log(res)
+                                if(res.data.result === 0){
+                                    this.$store.commit('setComponentData', this.resetID(JSON.parse(res.data.canvasData)))
+                                    this.$store.commit('setCanvasStyle', JSON.parse(res.data.canvasStyle))
+                                }
+                            })
+                        }
                     }
                 })
             })
