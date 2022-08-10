@@ -248,10 +248,10 @@ header
 }
 .release{
     float: right;
-
+    color: red;
 }
 .release:hover{
     cursor: pointer;
-    background: gray;
+    background: #b3d4fc;
 }
 </style>

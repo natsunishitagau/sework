@@ -431,7 +431,35 @@ export default {
                 this.$store.commit('hideContextMenu')
             }
         },
+        initWebSocket() {
+            this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.url.replace(new RegExp('/',"g"),'_')+'/');
+            this.websock.onmessage=this.websocketOnMessage;
+            this.websock.onopen =this.websocketOnOpen;
+            this.websock.onerror=this.websocketOnError;
+            this.websock.onclose=this.websocketClose;
+        },
+        sendWebSocketMessage(msg){
+            this.websock.send(JSON.stringify(msg))
+        },
+        websocketOnMessage(e){
+            console.log(e.data)
+        },
+        websocketOnOpen(e){
+            console.log(e)
+        },
+        websocketOnError(e){
+            console.log(e)
+        },
+        websocketClose(e){
+            console.log(e)
+        },
     },
+    mounted() {
+        this.initWebSocket()
+    },
+    beforeDestroy() {
+
+    }
 }
 </script>
 

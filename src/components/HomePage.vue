@@ -1,31 +1,20 @@
 <template>
     <div class="container">
-        <NaviBar></NaviBar>
+        <NaviBar style="position: absolute;z-index: 5;background: white"></NaviBar>
         <div class="body">
             <div class="app">
                 <div class="part1">
-                    <img src="../../public/icon.png"  alt="" style="margin-left:-100px;margin-top:150px;float:left">
-                    <p class="character1">欢迎来到墨书</p>
-                    <p class="character2">一个助您高效协作的平台</p>
+                    <img src="../../public/icon.png" alt="" style="margin-left:-100px;margin-top:100px;float:left">
+                    <img src="../../public/pic1.png" alt="" v-if="loc===0" style="width: 100%;height: 100%;position: absolute;width: 576px;height: 300px;left: 750px;top: 200px;">
+                    <img src="../../public/pic2.png" alt="" v-else-if="loc===1" style="width: 100%;height: 100%;position: absolute;width: 576px;height: 300px;left: 750px;top: 200px;">
+                    <img src="../../public/pic3.png" alt="" v-else-if="loc===2" style="width: 100%;height: 100%;position: absolute;width: 576px;height: 300px;left: 750px;top: 200px;">
+                    <img src="../../public/pic4.png" alt="" v-else-if="loc===3" style="width: 100%;height: 100%;position: absolute;width: 576px;height: 300px;left: 750px;top: 200px;">
                     <button class="button1" type="button" @click="judgeJump()" v-show="isShow">开始使用</button>
-                </div>
-                <div class="clear"></div>
-                <div class="part2">
-                    <p class="character3">墨书功能介绍:</p>
-                    <ul>
-                        <li style="font-size:30px;font-weight:bolder;margin-top:50px">管理团队</li>
-                        <li style="font-size:30px;font-weight:bolder">执行项目</li>
-                    </ul>
-                </div>
-                <div class="clear"></div>
-                <div class="part3">
-                    <div class="flip">
-                        <div class="front">
-                            <img src="../../public/gif1.gif" alt="">
-                        </div>
-                        <div class="back">
-                            <img src="../../public/gif2.gif" alt="" style="width:1000px;height:1000px">
-                        </div>
+                    <div class="leftRow" @click="moveLeft" v-show="loc!==0">
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M609.408 149.376 277.76 489.6a32 32 0 0 0 0 44.672l331.648 340.352a29.12 29.12 0 0 0 41.728 0 30.592 30.592 0 0 0 0-42.752L339.264 511.936l311.872-319.872a30.592 30.592 0 0 0 0-42.688 29.12 29.12 0 0 0-41.728 0z"></path></svg>
+                    </div>
+                    <div class="rightRow" @click="moveRight" v-show="loc!==3">
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M340.864 149.312a30.592 30.592 0 0 0 0 42.752L652.736 512 340.864 831.872a30.592 30.592 0 0 0 0 42.752 29.12 29.12 0 0 0 41.728 0L714.24 534.336a32 32 0 0 0 0-44.672L382.592 149.376a29.12 29.12 0 0 0-41.728 0z"></path></svg>
                     </div>
                 </div>
             </div>
@@ -41,6 +30,7 @@ export default {
         return {
             email: "",
             isShow: false,
+            loc:0
         }
     },
     components: {
@@ -49,6 +39,16 @@ export default {
     methods: {
         judgeJump(){
             this.$router.push({name:'login'})
+        },
+        moveLeft(){
+            if(this.loc>0){
+                this.loc--;
+            }
+        },
+        moveRight(){
+            if(this.loc<3){
+                this.loc++
+            }
         }
     },
     created() {
@@ -62,6 +62,31 @@ export default {
 </script>
 
 <style scoped>
+.leftRow{
+    position: absolute;
+    z-index: 5;
+    top: 340px;
+    left: 750px;
+    width: 30px;
+    height: 30px;
+}
+.rightRow{
+    position: absolute;
+    z-index: 5;
+    top: 340px;
+    left: 1295px;
+    width: 30px;
+    height: 30px;
+}
+.leftRow:hover,.rightRow:hover{
+    background-color: gray;
+}
+.welcomePart{
+    width: 100vw;
+    height: 100vh;
+    background: url("../../public/pic1.png") no-repeat;
+    background-size: 100vw 100vh;
+}
 .container {
     overflow-y: auto;
     height: 100%;
@@ -98,8 +123,9 @@ export default {
     border-radius: 15px;
     border: none;
     top: 60%;
-    left: 80%;
-    position: absolute;
+    left: 45%;
+    position: relative;
+
 }
 .button1:hover{
     cursor: pointer;
