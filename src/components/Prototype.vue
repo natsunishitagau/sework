@@ -45,7 +45,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="sign" @click="closeWindow()"><</div>
+                <div class="sign" @click="closeWindow()">&lt;</div>
             </template>
             <div class="sign2" v-else @click="showWindow()">></div>
         </div>

@@ -4,7 +4,6 @@ import App from './App'
 import store from './store'
 import router from './router'
 import '@/custom-component' // 注册自定义组件
-import VueRouter from 'vue-router'
 
 import axios from 'axios'
 import qs from "qs";
