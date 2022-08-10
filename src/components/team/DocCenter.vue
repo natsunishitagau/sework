@@ -98,7 +98,7 @@
       </el-dialog>
 
     </div>
-    <div>
+    <div class="vim-place">
       <div v-if="!docName" class="slogan">欢迎来到文档中心</div>
       <edit-doc2 v-else v-bind:url="form.URL"></edit-doc2>
     </div>
@@ -420,5 +420,9 @@ export default {
     flex: 1;
     text-align: center;
     font-size: 50px;
+  }
+  .vim-place
+  {
+    max-width: 100%;
   }
 </style>
