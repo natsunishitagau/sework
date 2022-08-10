@@ -25,20 +25,20 @@
       </el-header>
 
     <header>
-        <div class="floatWindow" style="position: absolute; z-index: 5;top: 120px">
-            <template v-if="isWindowShow">
+        <div class="floatWindow" style="position: absolute; z-index: 5;top: 70px">
+            <template>
                 <el-table
-                    height="400"
+                    height="600"
                     :data="docNames"
-                    style="width: 200px">
+                    style="width: 230px">
                     <el-table-column
                         label="文档"
-                        width="180">
+                        width="150">
                         <template slot-scope="scope">
                             <span class="tableRow" @click="chooseDoc(scope.row)">{{scope.row}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="">
+                    <el-table-column label="" width="80">
                         <template slot-scope="scope">
                             <el-button
                                 size="mini"
@@ -47,12 +47,13 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="sign" @click="closeWindow()">&lt;</div>
+
             </template>
-            <div class="sign2" v-else @click="showWindow()">></div>
         </div>
 
-      <span>文档编辑</span>
+
+      <span style="margin-left: 300px">文档编辑</span>
+
       <div>
 
         <span class="mess" @click="saveText">
@@ -73,15 +74,11 @@
           </el-dropdown>
         </span>
 
-        <span class="mess" @click="back">
-          <i class="el-icon-refresh-left"></i>
-          <span>返回</span>
-        </span>
 
       </div>
     </header>
 
-    <div style="border: 1px solid #ccc; margin-top: 10px;">
+    <div style="border: 1px solid #ccc; margin-top: 10px;margin-left: 300px;margin-right: 20px">
       <!-- 工具栏 -->
       <Toolbar
         style="border-bottom: 1px solid #ccc"
@@ -144,7 +141,7 @@ export default {
             canvasWidth: 1200,
         },
         dialogVisible:false,
-        isWindowShow:false,
+        isWindowShow:true,
         docNames:[],
         activeIndex: 'myProject',
         oldAvatar: window.sessionStorage.getItem('src'),
