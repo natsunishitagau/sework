@@ -3,32 +3,32 @@
         <header>分享链接</header>
         <hr/>
         <div class="info">
-          <el-col :span="12">
-            <el-card style="height:500px; margin-right:30px; box-shadow: 0 4px 4px rgb(0,0,0,0,1.5) !important;">
-              <el-form :model="form" label-width="120px">
-                <el-form-item label="搜索团队:">
-                  <el-input placeholder="请输入团队名称" v-model="form.groupName" clearable/>
-                </el-form-item>
-                <hr/>
-                <el-form-item label="搜索项目:" style="margin-top:20px">
-                  <el-input placeholder="请输入项目名称" v-model="form.proName" clearable/>
-                </el-form-item>
-              </el-form>
-              <el-button type="info" plain @click="confirm" style="margin-left:370px !important; margin-top:20px;">确 认</el-button>
-            </el-card>
-          </el-col>
-          <el-col :span="10">
-            <el-card style="height:500px; margin-left:30px; box-shadow: 0 4px 4px rgb(0,0,0,0,1.5) !important;" v-show="show">
-              <el-form :model="link" label-width="50px">
-                <el-form-item label="链接:">
-                    {{ this.link.linkURL }}
-                </el-form-item>
-              </el-form>
-              <hr/>
-              <el-button type="info" plain @click="jump" style="margin-left:50px !important; margin-top:20px;">点击跳转</el-button>
-              <el-button type="info" plain @click="cancel" style="margin-left:50px !important; margin-top:20px;">取 消</el-button>
-            </el-card>
-          </el-col>
+            <el-col :span="12">
+                <el-card style="height:500px; margin-right:30px; box-shadow: 0 4px 4px rgb(0,0,0,0,1.5) !important;">
+                    <el-form :model="form" label-width="120px">
+                        <el-form-item label="搜索团队:">
+                            <el-input placeholder="请输入团队名称" v-model="form.groupName" clearable/>
+                        </el-form-item>
+                        <hr/>
+                        <el-form-item label="搜索项目:" style="margin-top:20px">
+                            <el-input placeholder="请输入项目名称" v-model="form.proName" clearable/>
+                        </el-form-item>
+                    </el-form>
+                    <el-button type="info" plain @click="confirm" style="margin-left:370px !important; margin-top:20px;">确 认</el-button>
+                </el-card>
+            </el-col>
+            <el-col :span="10">
+                <el-card style="height:500px; margin-left:30px; box-shadow: 0 4px 4px rgb(0,0,0,0,1.5) !important;" v-show="show">
+                    <el-form :model="link" label-width="50px">
+                        <el-form-item label="链接:">
+                            {{ this.link.linkURL }}
+                        </el-form-item>
+                    </el-form>
+                    <hr/>
+                    <el-button type="info" plain @click="jump" style="margin-left:50px !important; margin-top:20px;">点击跳转</el-button>
+                    <el-button type="info" plain @click="cancel" style="margin-left:50px !important; margin-top:20px;">取 消</el-button>
+                </el-card>
+            </el-col>
         </div>
     </div>
 
@@ -58,6 +58,7 @@ export default {
     },
     methods: {
         confirm() {
+            const that = this
             this.form.email=sessionStorage.getItem("email")
             this.$axios.post('/project/sharePrototype/',this.$qs.stringify(this.form)).then(res => {
                 console.log(res);
@@ -85,6 +86,9 @@ export default {
                     this.targetURL += '&proName='
                     this.targetURL += this.proName
                     console.log(this.targetURL)
+                    sessionStorage.setItem('email', this.form.email)
+                    sessionStorage.setItem('group', this.groupName)
+                    sessionStorage.setItem('project', this.proName)
                     window.location.href = this.targetURL
                 }
                 else this.$message.error("团队或项目名称有误！")
@@ -95,7 +99,7 @@ export default {
                 if(res.data.result === 0) {
                     this.show = false
                 } else {
-                    his.$message.error("团队或项目名称有误！")
+                    this.$message.error("团队或项目名称有误！")
                 }
             })
         }

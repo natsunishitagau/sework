@@ -34,7 +34,9 @@
                 <el-table-column prop="status" label="项目状态" width="250">
                     <template #default="scope">
                         <el-dropdown>
-                            <el-tag>{{scope.row.status}}</el-tag>
+                            <el-tag type="info" v-if="scope.row.status=='未开始'">{{scope.row.status}}</el-tag>
+                            <el-tag type="warning" v-else-if="scope.row.status=='进行中'">{{scope.row.status}}</el-tag>
+                            <el-tag type="success" v-else>{{scope.row.status}}</el-tag>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item v-if="scope.row.status!=='未开始'" @click.native="changeStatus(scope.row.name,'未开始')">未开始</el-dropdown-item>
                                 <el-dropdown-item v-if="scope.row.status!=='进行中'" @click.native="changeStatus(scope.row.name,'进行中')">进行中</el-dropdown-item>
@@ -51,7 +53,8 @@
                         <div @mouseenter="op(scope.row.name)">
                             <span class="op" @click="copy(scope.row.name)">复制</span>&nbsp;&nbsp;&nbsp;&nbsp;
                             <span class="op" @click="isRename=true">重命名</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span class="op" @click="del">删除</span>
+                            <span class="op" @click="del">删除</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="op" @click="shareLink(scope.row.name)" >分享  </span>
                         </div>
                     </template>
                 </el-table-column>
@@ -96,7 +99,16 @@
         </span>
             </template>
         </el-dialog>
-
+        <el-dialog v-if="isShared" :visible.sync="isShared" title="链接" width="450px">
+            <el-card>
+                项目名称: {{ this.selectProName }}
+                <hr/>
+                链接: {{ this.link.linkURL }}
+                <hr/>
+                <el-button type="text" size="small" @click="copyUrl">复制链接</el-button>
+            </el-card>
+            <el-button type="text" size="small" @click="cancel" style="margin-left:20px;">取消分享</el-button>
+        </el-dialog>
     </div>
 </template>
 
@@ -117,7 +129,13 @@ export default {
             searchData:[],
             isCreate: false,
             isRename: false,
-            showCollect: -1
+            showCollect: -1,
+            isShared: false,
+            link: {
+                linkURL: '',
+            },
+            selectProName: '',
+            urlMap: [],
         }
     },
     methods: {
@@ -254,10 +272,56 @@ export default {
                     that.getInfo();
                 })
         },
+        shareLink(proName) {
+            const that = this
+            this.isShared = true
+            this.selectProName = proName
+            if(this.urlMap.has(proName)) {
+                this.link.linkURL = this.urlMap.get(proName)
+            }
+            else {
+                this.$axios.post('/project/sharePrototype/',this.$qs.stringify(this.form)).then(res => {
+                    console.log(res);
+                    if(res.data.result === 0) {
+                        this.link.linkURL = res.data.URL
+                        this.urlMap.set(proName, this.link.linkURL)
+                    }
+                    else that.$message.error("团队或项目名称有误！")
+                })
+            }
+        },
+        copyUrl () {
+            let data = this.link.linkURL
+            const inputTag = document.createElement('input');
+            document.body.appendChild(inputTag);
+            inputTag.setAttribute('value', data);
+            inputTag.select();
+            if (document.execCommand('copy')) {
+                document.execCommand('copy');
+                this.$message({
+                    type: 'success',
+                    message: 'URL已复制到剪切板',
+                });
+            }
+            document.body.removeChild(inputTag);
+        },
+        cancel() {
+            const that = this
+            this.$axios.post('/project/cancelSharePrototype/', this.$qs.stringify(this.form)).then(res=>{
+                if(res.data.result === 0) {
+                    this.isShared = false
+                    this.urlMap.delete(this.selectProName)
+                } else {
+                    this.$message.error("团队或项目名称有误！")
+                }
+            })
+        }
     },
     created() {
         this.form.email=sessionStorage.getItem("email");
         this.form.groupName=sessionStorage.getItem("group");
+        this.urlMap = new Map()
+        this.urlMap.set('proName', 'shareLink')
         this.getInfo();
     },
     watch: {

@@ -12,11 +12,6 @@ Router.prototype.push = function push(location) {
 
 const routes = [
     {
-        path: '/newpath',
-        name: 'newpath',
-        component: () =>import('../components/Documents.vue')
-    },
-    {
         path: '/prototype',
         name: 'prototype',
         component:() =>import('@/components/Prototype.vue')

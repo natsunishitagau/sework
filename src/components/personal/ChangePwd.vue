@@ -8,19 +8,17 @@
                     <el-form-item label="原密码：">
                         <el-input v-model="form.oldPassword" type="password"/>
                     </el-form-item>
-
-                    <el-form-item v-show="!pwdRight">
+                    <div  v-show="!pwdRight" style="color: red;font-size: 12px;margin-left: 150px">
                         密码应为6~20位且包含字母与数字
-                    </el-form-item>
+                    </div>
                     <el-form-item label="新密码：">
-                        <el-input v-model="password1" @keyup="checkPassword1" type="password"/>
+                        <el-input v-model="password1" @keyup.native="checkPassword1(password1)" type="password"/>
                     </el-form-item>
-
-                    <el-form-item  v-show="!same">
+                    <div  v-show="!same" style="color: red;font-size: 12px;margin-left: 150px">
                         两次密码不一致
-                    </el-form-item>
+                    </div>
                     <el-form-item label="确认密码：">
-                        <el-input v-model="password2" @keyup="checkPassword2" type="password"/>
+                        <el-input v-model="password2" @keyup.native="checkPassword2(password2)" type="password"/>
                     </el-form-item>
                 </el-form>
             </div>
@@ -44,16 +42,17 @@ export default {
             password1: "",
             password2: "",
             pwdRight: true,
-            same: true
+            same: false
         }
     },
     methods: {
-        checkPassword1() {
+        checkPassword1(password) {
             const pattern = new RegExp( /^(?=.*[a-zA-Z])(?=.*\d)[^]{6,20}$/)
-            this.pwdRight = pattern.test(this.password1)
+            this.pwdRight = pattern.test(password)
+            this.same = (this.password2===password)
         },
-        checkPassword2() {
-            this.same = (this.password1===this.password2)
+        checkPassword2(password) {
+            this.same = (this.password1===password)
         },
         changePwd() {
             if(this.pwdRight&&this.same)

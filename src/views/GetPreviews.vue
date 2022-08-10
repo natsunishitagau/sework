@@ -21,7 +21,7 @@
             <el-aside class="aside">
                 <el-table
                     :data="prototypeNames" stripe style="width: 160px;">
-                    <el-table-column prop="name" label="名称" :align="center">
+                    <el-table-column prop="name" label="名称" align="center">
                         <template #default="scope">
                             <el-button icon="el-icon-document">
                                 <a @click="prototypePreview(scope.row)">{{scope.row}}</a>
@@ -109,6 +109,7 @@ import axios from 'axios'
 import { getStyle, getCanvasStyle } from '@/utils/style'
 import ComponentWrapper from '../components/Editor/ComponentWrapper'
 import { changeStyleWithScale } from '@/utils/translate'
+
 export default {
     components: { ComponentWrapper },
     data() {
@@ -118,6 +119,8 @@ export default {
             avatarSize: 80,
             nickname: window.sessionStorage.getItem("nickname"),
             projectName: '',
+            groupName: '',
+            email: '',
             prototypeNames: [], // 当前项目所有原型名称
             prototypeName: '', //当前选择原型页
             componentData: [],
@@ -135,10 +138,11 @@ export default {
             drawer_size: '200px'
         }
     },
+
     created() {
-        this.projectName = sessionStorage.getItem('project')
         this.getPrototypes();
     },
+
     mounted() {
         this.$nextTick(() => {
             let dragDiv = this.$refs.dragDiv;
@@ -177,6 +181,7 @@ export default {
             })
         });
     },
+
     methods: {
         gotoCenter(){
             this.$router.push({name:'userInfo'})
@@ -200,6 +205,7 @@ export default {
                 window.sessionStorage.clear();
                 this.$router.push({path: '/login'})
             }).catch(() => {
+
             });
         },
         gotoPersonalCenter() {
@@ -210,16 +216,24 @@ export default {
         },
         // 获取原型名称
         async getPrototypes() {
+            let curURL = window.location.href
+            console.log(curURL)
+            let code = curURL.split('=')[1]
             try {
-                const res = await axios.post('/project/checkPrototypes/', this.$qs.stringify({
-                    email: sessionStorage.getItem('email'),
-                    groupName: sessionStorage.getItem('group'),
-                    proName: sessionStorage.getItem('project')
+                const res = await axios.post('/project/checkSharedPrototype/', this.$qs.stringify({
+                    'code': code
                 }))
                 if(res.data.result === 0) {
+                    this.projectName = res.data.proName
+                    this.groupName = res.data.groupName
                     this.prototypeNames = res.data.protoNames
+                    this.email = res.data.email
+                    this.oldAvatar = res.data.avatar
                     this.prototypeName = this.prototypeNames[0]
                     this.prototypePreview(this.prototypeName)
+                }
+                else if(res.data.result === 2) {
+                    this.$message.error('该链接已失效，请重新获取')
                 }
             } catch(err) {
                 console.log(err);
@@ -230,9 +244,9 @@ export default {
             this.prototypeName = name
             try {
                 const res = await axios.post('/project/checkPrototype/', this.$qs.stringify({
-                    email: sessionStorage.getItem('email'),
-                    groupName: sessionStorage.getItem('group'),
-                    proName: sessionStorage.getItem('project'),
+                    email: this.email,
+                    groupName: this.groupName,
+                    proName: this.projectName,
                     protoName: name
                 }))
                 if(res.data.result === 0) {
@@ -276,11 +290,13 @@ export default {
     // width: 89%;
     display: flex;
 }
+
 .aside {
     width: 160px !important;
     background-color: rgb(245, 244, 246) !important;
     box-shadow: 0 10px 10px rgb(0, 0, 0, 0.15) !important;
 }
+
 .bg {
     width: 95%;
     height: 50%;
@@ -303,6 +319,7 @@ export default {
         }
     }
 }
+
 .float-drag-button {
     position: absolute;
     right: 0;
@@ -322,12 +339,14 @@ export default {
         user-select: none;
     }
 }
+
 .content {
     padding-left: 90px;
     height: 100%;
     display: flex;
     flex: 1;
 }
+
 .right-aside {
     width: 200px;
     font-size: 15px;
@@ -335,7 +354,9 @@ export default {
     flex-direction: column;
     border-right: 1px solid silver;
 }
+
 .avatarWrapper {
     padding-left: 65px;
 }
+
 </style>
