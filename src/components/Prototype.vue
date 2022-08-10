@@ -10,9 +10,7 @@
                 style="padding-left: 10%; padding-right: 10%">
                 <el-menu-item @click="goBack"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg></el-menu-item>
                 <el-menu-item index="myProject" >项目名称: {{projectName}}</el-menu-item>
-<!--                <el-menu-item index="2">页面名称: {{prototypeName}}</el-menu-item>-->
-<!--                <el-menu-item index="3" @click="newProto">创建页面</el-menu-item>-->
-<!--                <el-menu-item @click="gotoCenter()" style="margin-left: 100px">个人中心</el-menu-item>-->
+<!--                <el-menu-item index="2" >页面名称: {{prototypeName}}</el-menu-item>-->
                 <el-menu-item index="avatar" style="float: right;margin-right: -60px">
                     <el-avatar :src="oldAvatar"></el-avatar>
                 </el-menu-item>
@@ -23,7 +21,8 @@
             </el-menu>
         </el-header>
         <Toolbar/>
-        <svg style="width: 15px;height: 15px;position: absolute; top:22px;left:30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg>
+        <svg class="icon1" style="width: 15px;height: 15px;position: absolute; top:22px;left:30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg>
+        <div style="position: absolute;left: 210px;top: 20px">页面名称：{{prototypeName}}</div>
         <div class="floatWindow" style="position: absolute; z-index: 5;top: 120px">
             <template v-if="isWindowShow">
                 <el-table
@@ -98,11 +97,10 @@
                     <el-input v-model="insertData.canvasWidth"/>
                 </el-form-item>
                 <el-form-item label="页面模板：">
-                    <el-select v-model="model" placeholder="请选择页面模板">
+                    <el-select v-model="model" placeholder="默认模板">
                         <el-option label="默认" value="0"></el-option>
-                        <el-option label="模板1" value="a"></el-option>
-                        <el-option label="模板2" value="b"></el-option>
-                        <el-option label="模板3" value="c"></el-option>
+                        <el-option label="线上商城(手机)" value="a"></el-option>
+                        <el-option label="线上商城(电脑)" value="b"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -132,7 +130,7 @@ export default {
     components: { Editor, ComponentList, AnimationList, EventList, Toolbar, RealTimeComponentList, CanvasAttr },
     data() {
         return {
-            model: "",
+            model: "0",
             defaultComponentData:[{
                 animations:[],
                 events:{},
@@ -168,6 +166,10 @@ export default {
                 background: '#fff',
                 fontSize: 14,
             },
+            defaultComponentData1:[],
+            defaultComponentData2:[],
+            defaultCanvasData1:{width:"360",height:"640",scale:100,color:"rgba(0, 0, 0, 1)",opacity:100,background:"#fff",fontSize:20,backgroundColor:"rgba(183, 235, 170, 1)"},
+            defaultCanvasData2:{},
             activeIndex: 'myProject',
             activeName: 'attr',
             reSelectAnimateIndex: undefined,
@@ -234,11 +236,23 @@ export default {
         },
         createPrototype(){
             const that = this
-            mapState.componentData = that.defaultComponentData
             mapState.canvasStyleData = that.defaultCanvasData
             mapState.canvasStyleData.width=that.insertData.canvasWidth
             mapState.canvasStyleData.height=that.insertData.canvasHeight
             if(that.insertData.protoName.length!==0) {
+                switch(that.model)
+                {
+                    case "a":
+                        mapState.componentData = that.defaultComponentData1
+                        mapState.canvasStyleData = that.defaultCanvasData1
+                        break;
+                    case "b":
+                        mapState.componentData = that.defaultComponentData2
+                        mapState.canvasStyleData = that.defaultCanvasData2
+                        break;
+                    default:
+                        mapState.componentData = that.defaultComponentData
+                }
                 this.$axios.post('/project/createPrototype/', this.$qs.stringify({
                     email: sessionStorage.getItem('email'),
                     groupName: sessionStorage.getItem('group'),
@@ -431,11 +445,42 @@ export default {
                 this.$store.commit('hideContextMenu')
             }
         },
+        initWebSocket() {
+            this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.url.replace(new RegExp('/',"g"),'_')+'/');
+            this.websock.onmessage=this.websocketOnMessage;
+            this.websock.onopen =this.websocketOnOpen;
+            this.websock.onerror=this.websocketOnError;
+            this.websock.onclose=this.websocketClose;
+        },
+        sendWebSocketMessage(msg){
+            this.websock.send(JSON.stringify(msg))
+        },
+        websocketOnMessage(e){
+            console.log(e.data)
+        },
+        websocketOnOpen(e){
+            console.log(e)
+        },
+        websocketOnError(e){
+            console.log(e)
+        },
+        websocketClose(e){
+            console.log(e)
+        },
     },
+    mounted() {
+        this.initWebSocket()
+    },
+    beforeDestroy() {
+
+    }
 }
 </script>
 
 <style lang="scss">
+//.icon1:hover{
+//    cursor: pointer;
+//}
 .home {
     height: 100vh;
     background: #FFE;

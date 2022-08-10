@@ -20,6 +20,9 @@ Vue.config.productionTip = false
 Vue.prototype.$axios = axios;
 Vue.prototype.$qs = qs;
 
+import x2js from 'x2js' // xml数据处理插件
+Vue.prototype.$x2js = new x2js() // 创建x2js对象，挂到vue原型上
+
 axios.defaults.baseURL="http://81.70.16.241/back";
 
 new Vue({
