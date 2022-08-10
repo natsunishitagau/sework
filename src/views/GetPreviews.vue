@@ -1,22 +1,5 @@
 <template>
     <div>
-        <el-header>
-            <el-menu
-                :default-active="activeIndex"
-                class="el-menu-demo"
-                mode="horizontal"
-                @select="handleSelect"
-                background-color="#FFF"
-                style="padding-left: 10%; padding-right: 10%">
-                <el-menu-item index="myProject" >项目名称: {{projectName}}</el-menu-item>
-                <el-menu-item @click="gotoCenter()">个人中心</el-menu-item>
-                <el-menu-item index="avatar" style="float: right">
-                    <el-avatar :src="oldAvatar"></el-avatar>
-                </el-menu-item>
-                <el-menu-item @click="goBack">返回</el-menu-item>
-                <el-menu-item @click="logout" style="float: right">退出登录</el-menu-item>
-            </el-menu>
-        </el-header>
         <el-container>
             <el-aside class="aside">
                 <el-table
@@ -36,7 +19,7 @@
                         <el-breadcrumb-item>项目 {{ projectName }} 原型</el-breadcrumb-item>
                         <el-breadcrumb-item>原型页 {{ prototypeName }}</el-breadcrumb-item>
                     </el-breadcrumb>
-                    <el-col :span="22">
+                    <el-col :span="24">
                         <el-card class="body">
                             <div ref="container" class="bg">
                                 <div class="canvas-container">
@@ -55,49 +38,6 @@
                             </div>
                         </el-card>
                     </el-col>
-                    <el-col :span="2">
-                        <div ref="dragDiv" class="float-drag-button" @click="drawer = true">
-                            <span>菜单栏</span>
-                        </div>
-                    </el-col>
-                    <el-drawer class="content"
-                               :title="nickname"
-                               :visible.sync="drawer"
-                               :direction="direction"
-                               :size="drawer_size">
-                        <div class="avatarWrapper" @click="gotoPersonalCenter">
-                            <el-avatar :src="oldAvatar" :size="avatarSize"></el-avatar>
-                        </div>
-                        <hr/>
-                        <div class="right-aside">
-                            <div @click="recent" style="margin-left:20px; margin-top: 60px; cursor:pointer">
-                                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8="" style="width:16px;height:16px;margin-left:10px;">
-                                    <path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z">
-                                    </path><path fill="currentColor" d="M480 256a32 32 0 0 1 32 32v256a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32z">
-                                </path>
-                                    <path fill="currentColor" d="M480 512h256q32 0 32 32t-32 32H480q-32 0-32-32t32-32z">
-                                    </path>
-                                </svg>
-                                最近浏览
-                            </div>
-                            <div @click="collect" style="margin-left:20px; margin-top: 60px; cursor:pointer">
-                                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8="" style="width:16px;height:16px;margin-left:10px;">
-                                    <path fill="currentColor" d="M283.84 867.84 512 747.776l228.16 119.936a6.4 6.4 0 0 0 9.28-6.72l-43.52-254.08 184.512-179.904a6.4 6.4 0 0 0-3.52-10.88l-255.104-37.12L517.76 147.904a6.4 6.4 0 0 0-11.52 0L392.192 379.072l-255.104 37.12a6.4 6.4 0 0 0-3.52 10.88L318.08 606.976l-43.584 254.08a6.4 6.4 0 0 0 9.28 6.72z">
-                                    </path>
-                                </svg>
-                                我的消息
-                            </div>
-                            <div @click="newGroup" style="margin-left:20px; margin-top: 60px; cursor:pointer">
-                                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8="" style="width:16px;height:16px;margin-left:10px;">
-                                    <path fill="currentColor" d="M352 480h320a32 32 0 1 1 0 64H352a32 32 0 0 1 0-64z">
-                                    </path><path fill="currentColor" d="M480 672V352a32 32 0 1 1 64 0v320a32 32 0 0 1-64 0z">
-                                </path><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z">
-                                </path>
-                                </svg>
-                                新建团队
-                            </div>
-                        </div>
-                    </el-drawer>
                 </div>
             </el-main>
         </el-container>
@@ -298,8 +238,8 @@ export default {
 }
 
 .bg {
-    width: 95%;
-    height: 50%;
+    width: 100%;
+    height: 55%;
     position: float;
     background: rgb(0, 0, 0, .5);
     z-index: 10;
@@ -307,7 +247,7 @@ export default {
     align-items: center;
     justify-content: center;
     overflow: auto;
-    padding: 20px;
+    padding: 40px;
     .canvas-container {
         width: calc(100%);
         height: calc(100%);
