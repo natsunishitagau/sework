@@ -24,6 +24,24 @@ body
     -moz-osx-font-smoothing: grayscale;
 }
 a{text-decoration: none;}
+.el-empty
+{
+    margin-top: 130px;
+}
+.el-dialog
+{
+  border-radius: 8px !important;
+}
+.el-dialog__header
+{
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+.el-dialog__body
+{
+    padding: 15px 40px 60px 40px !important;
+}
 ul
 {
     padding-inline-start: 0 !important;

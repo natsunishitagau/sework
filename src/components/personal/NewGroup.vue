@@ -5,18 +5,19 @@
         <div class="info">
             <div>
                 <el-form :model="form" label-width="120px">
+                    <el-form-item v-show="form.groupName.length===0" style="color: red">
+                        *团队名不能为空
+                    </el-form-item>
 
                     <el-form-item label="团队名称：">
                         <el-input v-model="form.groupName" show-word-limit maxlength="15"/>
                     </el-form-item>
 
-                    <el-form-item v-show="form.groupName.length===0" style="color: red">
-                        团队名不能为空
-                    </el-form-item>
+                    
                 </el-form>
             </div>
         </div>
-        <span class="sure" @click="create">确定</span>
+        <div class="sure" @click="create">确定</div>
     </div>
 </template>
 
@@ -63,6 +64,7 @@ header
     width: 400px;
     margin-top: 30px;
     font-size: 18px;
+    height: 300px;
 }
 .sure
 {

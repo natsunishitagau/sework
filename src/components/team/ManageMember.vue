@@ -1,10 +1,21 @@
 <template>
     <div>
         <header>
-            <div style="float:left">成员管理</div>
-            <div class="release" v-if="pos==0" @click="releaseTeam">解散团队</div>
-            <div class="release" v-else @click="leaveTeam">退出团队</div>
-            <div class="clear"></div>
+            <span>成员管理</span>
+            <div>
+
+              <span class="mess" v-if="pos==0" @click="releaseTeam">
+                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896zm0 393.664L407.936 353.6a38.4 38.4 0 1 0-54.336 54.336L457.664 512 353.6 616.064a38.4 38.4 0 1 0 54.336 54.336L512 566.336 616.064 670.4a38.4 38.4 0 1 0 54.336-54.336L566.336 512 670.4 407.936a38.4 38.4 0 1 0-54.336-54.336L512 457.664z"></path></svg>
+                <span>解散团队</span>
+              </span>
+
+              <span class="mess" v-else @click="leaveTeam">
+                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M384 96a32 32 0 0 1 64 0v786.752a32 32 0 0 1-54.592 22.656L95.936 608a32 32 0 0 1 0-45.312h.128a32 32 0 0 1 45.184 0L384 805.632V96zm192 45.248a32 32 0 0 1 54.592-22.592L928.064 416a32 32 0 0 1 0 45.312h-.128a32 32 0 0 1-45.184 0L640 218.496V928a32 32 0 1 1-64 0V141.248z"></path></svg>
+                <span>退出团队</span>
+              </span>
+
+            </div>
+
         </header>
 
         <hr/>
@@ -73,20 +84,34 @@ export default {
     },
     methods: {
         releaseTeam(){
-            const that = this
-            this.$axios.post('/group/deleteGroup/',this.$qs.stringify({
+            const that = this;
+            this.$confirm("是否确认该操作","提示",{
+              iconClass: "el-icon-question",
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                showClose: true,
+                type: "warning",
+            }).then(function(){
+                that.$axios.post('/group/deleteGroup/',that.$qs.stringify({
                 email: sessionStorage.getItem('email'),
                 groupName: sessionStorage.getItem('group')
-            })).then(res =>{
-                console.log(res)
-                if(res.data.result==0){
-                    this.$message.success("解散成功")
-                    sessionStorage.setItem('destination',"userinfo")
-                    this.$router.push({name: 'emptyPage'});
-                }else{
-                    this.$message.error("请求错误")
-                }
+                })).then(res =>{
+                    console.log(res)
+                    if(res.data.result==0){
+                        that.$message.success("解散成功")
+                        sessionStorage.setItem('destination',"userinfo")
+                        that.$router.push({name: 'emptyPage'});
+                    }else{
+                        that.$message.error("请求错误")
+                    }
+                })
+            }).then((data) => {
+              
             })
+            .catch(function (err) {
+              //捕获异常
+            });
+            
         },
         leaveTeam(){
             const that = this
@@ -196,7 +221,7 @@ export default {
 svg
 {
     height: 13px;
-    margin-left: 7px;
+    margin-right: 7px;
     cursor: pointer;
 }
 img
@@ -213,11 +238,31 @@ img
 }
 header
 {
-    text-align: left;
-    font-size: 30px;
-    font-weight: 700;
     margin-bottom: 20px;
     font-family: Mulish;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+header>span
+{
+    font-size: 30px;
+    font-weight: 700;
+}
+.mess
+{
+    display: flex;
+    float: left;
+    align-items: center;
+    margin-left: 10px;
+    cursor: pointer;
+    padding: 5px 6px;
+    border-radius: 5px;
+}
+.mess:hover
+{
+    background-color: rgb(240, 240, 240);
 }
 .op
 {
@@ -242,16 +287,5 @@ header
 .op div:hover
 {
     background-color: rgb(240,240,240);
-}
-.clear{
-    clear: both;
-}
-.release{
-    float: right;
-
-}
-.release:hover{
-    cursor: pointer;
-    background: gray;
 }
 </style>

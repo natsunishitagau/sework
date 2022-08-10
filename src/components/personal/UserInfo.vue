@@ -5,26 +5,26 @@
         <hr/>
         <div class="info">
             <div>
-                <el-form :model="form" label-width="120px">
-                    <el-form-item v-show="!nickRight">
-                        用户名应为1~10位的汉字、字母或数字。
-                    </el-form-item>
+                <el-form :model="form" label-width="150px">
+                    <div v-show="!nickRight" class="hint">
+                        *用户名应为1~10位的汉字、字母或数字。
+                    </div>
                     <el-form-item label="用户名：">
-                        <el-input v-model="form.nickname" @keyup="checkNickname"/>
+                        <el-input v-model="form.nickname" @keyup.native="checkNickname"/>
                     </el-form-item>
 
-                    <el-form-item v-show="!realRight">
-                        真实姓名应为1~20位, 不能有数字或特殊字符。
-                    </el-form-item>
+                    <div v-show="!realRight" class="hint">
+                        *真实姓名应为1~20位, 不能有数字或特殊字符。
+                    </div>
                     <el-form-item label="真实姓名：">
-                        <el-input v-model="form.realname" @keyup="checkRealname"/>
+                        <el-input v-model="form.realname" @keyup.native="checkRealname"/>
                     </el-form-item>
                     <el-form-item label="邮箱：">
                         <el-input v-model="form.email" disabled/>
                     </el-form-item>
 
                     <el-form-item label="个人简介：">
-                        <el-input v-model="form.description" show-word-limit :rows="5" resize="none"
+                        <el-input v-model="form.description" show-word-limit :rows="7" resize="none"
                                   type="textarea" placeholder="个人简介" maxlength="100"/>
                     </el-form-item>
                 </el-form>
@@ -34,8 +34,7 @@
         <span class="change" @click="changeInfo">修改信息</span>
     </div>
     <el-dialog title="修改头像" v-if="DialogVisible" :visible.sync="DialogVisible" width="35%" :modal-append-to-body="false" center @close="DialogClosed">
-        <el-form ref="avatarRef" label-width="110px" enctype="multipart/form-data">
-            <div style="margin-left: 155px">点击选取头像</div>
+        <el-form ref="avatarRef" enctype="multipart/form-data">
             <el-form-item>
                 <el-upload
                     class="avatar-uploader"
@@ -47,15 +46,15 @@
                     :before-upload="beforeAvatarUpload"
                     :on-change="filePreview">
                     <img v-if="newAvatarSrc" :src="newAvatarSrc" class="avatar-style" />
-                    <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
         </el-form>
-        <div>上传头像图片只能是 JPG 格式且大小不超过10MB</div>
-        <span name="footer" class="dialog-footer">
-      <el-button @click="DialogClosed(false)">取消</el-button>
-      <el-button type="primary" @click="changeAvatar">确定</el-button>
-    </span>
+        <div style="text-align:center; margin-bottom: 20px">上传头像图片只能是 JPG 格式且大小不超过10MB</div>
+        <div style="text-align:center;">
+          <el-button @click="DialogClosed(false)">取消</el-button>&nbsp;&nbsp;
+          <el-button type="primary" @click="changeAvatar">确定</el-button>
+        </div>
     </el-dialog>
     </div>
 </template>
@@ -181,7 +180,11 @@ header
     display: flex;
     justify-content: space-between;
     margin-top: 30px;
-    font-size: 18px;
+    font-size: 19px;
+}
+.info>div
+{
+  width: 400px;
 }
 img
 {
@@ -194,7 +197,7 @@ img
 {
     padding-left: 25px;
     float:left;
-    margin-left: 20.5%;
+    margin-left: 290px;
     height: 36px;
     line-height: 36px;
     width: 120px;
@@ -207,7 +210,19 @@ img
 {
     background-color: rgb(100, 200, 237);
 }
+.hint
+{
+  color: red;
+  font-size: 12px;
+  margin-left: 130px;
+  margin-bottom: 6px;
+}
+::v-deep .el-form-item__content
+{
+  text-align: center;
+}
 .avatar-uploader {
+    display: inline-block;
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;

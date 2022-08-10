@@ -33,10 +33,10 @@
 
                 <el-table-column prop="status" label="项目状态" width="250">
                     <template #default="scope">
-                        <el-dropdown>
-                            <el-tag type="info" v-if="scope.row.status=='未开始'">{{scope.row.status}}</el-tag>
-                            <el-tag type="warning" v-else-if="scope.row.status=='进行中'">{{scope.row.status}}</el-tag>
-                            <el-tag type="success" v-else>{{scope.row.status}}</el-tag>
+                        <el-dropdown trigger="click">
+                            <el-tag type="info" v-if="scope.row.status=='未开始'" style="cursor:pointer;">{{scope.row.status}}</el-tag>
+                            <el-tag type="warning" v-else-if="scope.row.status=='进行中'" style="cursor:pointer;">{{scope.row.status}}</el-tag>
+                            <el-tag type="success" v-else style="cursor:pointer;">{{scope.row.status}}</el-tag>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item v-if="scope.row.status!=='未开始'" @click.native="changeStatus(scope.row.name,'未开始')">未开始</el-dropdown-item>
                                 <el-dropdown-item v-if="scope.row.status!=='进行中'" @click.native="changeStatus(scope.row.name,'进行中')">进行中</el-dropdown-item>
@@ -53,7 +53,7 @@
                         <div @mouseenter="op(scope.row.name)">
                             <span class="op" @click="copy(scope.row.name)">复制</span>&nbsp;&nbsp;&nbsp;&nbsp;
                             <span class="op" @click="isRename=true">重命名</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span class="op" @click="del">删除</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="op" @click="del(scope.row.name)">删除</span>&nbsp;&nbsp;&nbsp;&nbsp;
                             <span class="op" @click="shareLink(scope.row.name)" >分享  </span>
                         </div>
                     </template>
@@ -218,7 +218,6 @@ export default {
                 })
         },
         op(name) {
-            this.form.proName=name;
             this.form.oldProName=name;
             this.form.newProName=name;
         },
@@ -228,6 +227,7 @@ export default {
           sessionStorage.setItem("project",item.row.name);
         },
         leave() {
+          this.form.proName="";
           this.showCollect=-1;
         },
         cancelCollect() {
@@ -263,8 +263,9 @@ export default {
                     else that.$message.error("项目名称已存在！");
                 })
         },
-        del() {
+        del(proName) {
             var that=this;
+            this.form.proName=proName
             this.$axios.post('/group/deleteProject/',this.$qs.stringify(this.form))
                 .then(res =>{
                     console.log(res);

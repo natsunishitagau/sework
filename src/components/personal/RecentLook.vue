@@ -8,7 +8,7 @@
         </div>
 
         <div v-else>
-            <el-table :data="tableData" height="500" borderstyle="width:100%">
+            <el-table :data="tableData" max-height="550" borderstyle="width:100%">
                 <el-table-column label="项目名称" width="360">
                     <template #default="scope">
                         <a :title="scope.row.proName" target="_self"
@@ -78,10 +78,6 @@ header
     font-weight: 700;
     margin-bottom: 20px;
     font-family: Mulish;
-}
-::v-deep .el-empty
-{
-    margin-top: 130px;
 }
 .lookPro:hover{
     color: #00c3ff;

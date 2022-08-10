@@ -4,13 +4,13 @@
         <hr/>
 
         <div v-if="tableData.length == 0">
-            <el-empty description="暂无项目"></el-empty>
+            <el-empty :image="noRes" description="暂无项目"></el-empty>
         </div>
 
         <div v-else>
 
-            <el-table :data="tableData" height="550" borderstyle="width:100%">
-                <el-table-column label="项目名" width="400">
+            <el-table :data="tableData" max-height="550" borderstyle="width:100%">
+                <el-table-column label="项目名称" width="400">
                     <template #default="scope">
                         <a :title="scope.row.name"
                            @click="lookPro(scope.row)">
@@ -23,8 +23,9 @@
                 <el-table-column fixed="right" width="300" label="操作">
                     <template #default="scope">
                         <div @mouseenter="op(scope.row)">
-                            <i class="el-icon-star-on"></i>
-                            <span class="op" @click="cancel">取消收藏</span>
+                            <span class="op" @click="cancel">
+                              <i class="el-icon-star-on"></i>取消收藏
+                            </span>
                         </div>
                     </template>
                 </el-table-column>
@@ -38,6 +39,7 @@
 </template>
 
 <script>
+import noResult from "../../../public/noResult.png";
 export default {
     name: "collectProject",
     data() {
@@ -47,7 +49,8 @@ export default {
                 groupName: "",
                 proName: ""
             },
-            tableData: []
+            tableData: [],
+            noRes: noResult,
         }
     },
     methods: {
@@ -122,8 +125,6 @@ export default {
     .op:hover
     {
         color: rgb(0, 162, 255);
-        text-underline-offset: 1px;
-        text-decoration: underline;
     }
 
 </style>

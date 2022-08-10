@@ -35,7 +35,7 @@
       />
       <!-- 编辑器 -->
       <Editor
-        style="height: 550px; overflow-y: hidden;"
+        style="height: 520px; overflow-y: hidden;"
         :defaultConfig="editorConfig"
         v-model="html"
 

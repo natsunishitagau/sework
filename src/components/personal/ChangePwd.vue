@@ -4,18 +4,18 @@
         <hr/>
         <div class="info">
             <div>
-                <el-form :model="form" label-width="120px">
+                <el-form :model="form" label-width="150px">
                     <el-form-item label="原密码：">
                         <el-input v-model="form.oldPassword" type="password"/>
                     </el-form-item>
-                    <div  v-show="!pwdRight" style="color: red;font-size: 12px;margin-left: 150px">
-                        密码应为6~20位且包含字母与数字
+                    <div v-show="!pwdRight" class="hint">
+                        *密码应为6~20位且包含字母与数字
                     </div>
                     <el-form-item label="新密码：">
                         <el-input v-model="password1" @keyup.native="checkPassword1(password1)" type="password"/>
                     </el-form-item>
-                    <div  v-show="!same" style="color: red;font-size: 12px;margin-left: 150px">
-                        两次密码不一致
+                    <div v-show="!same&&password2" class="hint">
+                        *两次密码不一致
                     </div>
                     <el-form-item label="确认密码：">
                         <el-input v-model="password2" @keyup.native="checkPassword2(password2)" type="password"/>
@@ -23,7 +23,7 @@
                 </el-form>
             </div>
         </div>
-        <span class="change" @click="changePwd" style="padding-left: 25px">提交修改</span>
+        <span class="change" @click="changePwd">提交修改</span>
     </div>
 
 </template>
@@ -42,7 +42,7 @@ export default {
             password1: "",
             password2: "",
             pwdRight: true,
-            same: false
+            same: true
         }
     },
     methods: {
@@ -97,12 +97,19 @@ header
 {
     width: 400px;
     margin-top: 50px;
-    font-size: 18px;
+    font-size: 20px;
+}
+.hint
+{
+  color: red;
+  font-size: 12px;
+  margin-left: 130px;
+  margin-bottom: 6px;
 }
 .change
 {
     float:left;
-    margin-left: 25%;
+    margin-left: 280px;
     height: 36px;
     line-height: 36px;
     width: 120px;
@@ -110,6 +117,7 @@ header
     color: white;
     cursor: pointer;
     border-radius: 5px;
+    text-align: center;
 }
 .change:active
 {
