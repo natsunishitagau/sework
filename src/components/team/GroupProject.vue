@@ -99,15 +99,15 @@
         </span>
             </template>
         </el-dialog>
-        <el-dialog v-if="isShared" :visible.sync="isShared" title="链接" width="450px">
+        <el-dialog v-if="isShared" :visible.sync="isShared" title="链接" width="550px">
             <el-card>
                 项目名称: {{ this.selectProName }}
                 <hr/>
                 链接: {{ this.link.linkURL }}
                 <hr/>
                 <el-button type="text" size="small" @click="copyUrl">复制链接</el-button>
+                <el-button type="text" size="small" @click="cancel" style="margin-left:20px;">取消分享</el-button>
             </el-card>
-            <el-button type="text" size="small" @click="cancel" style="margin-left:20px;">取消分享</el-button>
         </el-dialog>
     </div>
 </template>
@@ -285,6 +285,10 @@ export default {
                     if(res.data.result === 0) {
                         this.link.linkURL = res.data.URL
                         this.urlMap.set(proName, this.link.linkURL)
+                        this.$message({
+                            type: 'success',
+                            message: '生成新链接成功！',
+                        });
                     }
                     else that.$message.error("团队或项目名称有误！")
                 })
@@ -311,6 +315,11 @@ export default {
                 if(res.data.result === 0) {
                     this.isShared = false
                     this.urlMap.delete(this.selectProName)
+                    this.$message({
+                        type: 'success',
+                        message: '删除链接成功！',
+                    });
+
                 } else {
                     this.$message.error("团队或项目名称有误！")
                 }

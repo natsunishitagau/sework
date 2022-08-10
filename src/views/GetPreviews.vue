@@ -19,7 +19,7 @@
                         <el-breadcrumb-item>项目 {{ projectName }} 原型</el-breadcrumb-item>
                         <el-breadcrumb-item>原型页 {{ prototypeName }}</el-breadcrumb-item>
                     </el-breadcrumb>
-                    <el-col :span="22">
+                    <el-col :span="24">
                         <el-card class="body">
                             <div ref="container" class="bg">
                                 <div class="canvas-container">
@@ -238,8 +238,8 @@ export default {
 }
 
 .bg {
-    width: 95%;
-    height: 50%;
+    width: 100%;
+    height: 55%;
     position: float;
     background: rgb(0, 0, 0, .5);
     z-index: 10;
@@ -247,7 +247,7 @@ export default {
     align-items: center;
     justify-content: center;
     overflow: auto;
-    padding: 20px;
+    padding: 40px;
     .canvas-container {
         width: calc(100%);
         height: calc(100%);
