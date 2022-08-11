@@ -83,7 +83,8 @@ export default {
         MENU_CONF: {}
       },
       printContent: "",
-      timer: ''
+      timer: '',
+      editTime: null
     }
   },
   methods: {
@@ -118,7 +119,7 @@ export default {
     back() {
       this.$router.push({name:'proInterface'})
     },
-    /*
+    
     initWebSocket() {
       this.websock=new WebSocket("ws://81.70.16.241:8001/saveDocument/"+this.url.replace(new RegExp('/',"g"),'_')+'/');
       this.websock.onmessage=this.websocketOnMessage;
@@ -132,8 +133,7 @@ export default {
     websocketOnMessage(e){
       let msg=JSON.parse(e.data);
       this.html=msg.content;
-      //console.log(msg.nickname)
-      // msg.location [0],[1]
+      
       
     },
     websocketOnOpen(e){
@@ -146,7 +146,7 @@ export default {
     websocketClose(e){
       console.log(e);
     },
-    */
+    
 
     exportText(cmd) {
       switch(cmd) {
@@ -200,11 +200,12 @@ export default {
           that.saveText()//;saveProject
         }
     };
-    //this.initWebSocket();
+    this.initWebSocket();
   },
   created() {
     this.form.email=sessionStorage.getItem("email");
     this.form.groupName=sessionStorage.getItem("group");
+    this.editTime=new Date();
     this.getInfo();
   },
   beforeDestroy() {
@@ -214,6 +215,21 @@ export default {
       clearInterval(this.timer)
   },
   watch: {
+    html(newValue, oldValue)
+    {
+      this.form.content=newValue;
+      var nowTime=new Date();
+
+      if(this.websock.readyState===1&&(nowTime-this.editTime>=400))
+      {
+        this.editTime=nowTime;
+        this.sendWebSocketMessage({
+          email: this.form.email,
+          URL: this.url,
+          content: this.form.content
+        });
+      }
+    },
     url() {
       this.getInfo();
     }

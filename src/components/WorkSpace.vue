@@ -514,5 +514,8 @@ export default {
     {
         background-color: rgb(100, 200, 237);
     }
-
+    ::v-deep .el-dialog__body
+    {
+        padding: 15px 40px 60px 40px;
+    }
 </style>

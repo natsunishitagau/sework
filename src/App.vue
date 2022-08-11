@@ -38,10 +38,6 @@ a{text-decoration: none;}
     text-align: center;
     font-weight: bold;
 }
-.el-dialog__body
-{
-    padding: 15px 40px 60px 40px !important;
-}
 ul
 {
     padding-inline-start: 0 !important;
