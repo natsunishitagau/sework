@@ -122,7 +122,7 @@ export default {
     height: 50px;
     border-radius: 15px;
     border: none;
-    top: 60%;
+    top: 75%;
     left: 45%;
     position: relative;
 

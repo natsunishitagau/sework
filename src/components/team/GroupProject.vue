@@ -281,7 +281,12 @@ export default {
                 this.link.linkURL = this.urlMap.get(proName)
             }
             else {
-                this.$axios.post('/project/sharePrototype/',this.$qs.stringify(this.form)).then(res => {
+                console.log(this.form)
+                this.$axios.post('/project/sharePrototype/',this.$qs.stringify({
+                    email: this.form.email,
+                    groupName: this.form.groupName,
+                    proName: proName
+                })).then(res => {
                     console.log(res);
                     if(res.data.result === 0) {
                         this.link.linkURL = res.data.URL
@@ -312,7 +317,11 @@ export default {
         },
         cancel() {
             const that = this
-            this.$axios.post('/project/cancelSharePrototype/', this.$qs.stringify(this.form)).then(res=>{
+            this.$axios.post('/project/cancelSharePrototype/', this.$qs.stringify({
+                email: this.form.email,
+                groupName: this.form.groupName,
+                proName: this.selectProName
+            })).then(res=>{
                 if(res.data.result === 0) {
                     this.isShared = false
                     this.urlMap.delete(this.selectProName)
