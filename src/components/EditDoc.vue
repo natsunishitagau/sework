@@ -24,7 +24,7 @@
           </el-menu>
       </el-header>
       <svg class="icon1" style="width: 15px;height: 15px;position: absolute; top:22px;left:30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-78e17ca8=""><path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></svg>
-      <div style="position: absolute;left: 210px;top: 20px">页面名称：{{form.docName}}</div>
+      <div style="position: absolute;left: 400px;top: 20px">文档名称：{{form.docName}}</div>
       <header>
         <div class="floatWindow" style="position: absolute; z-index: 5;top: 70px">
             <template>
